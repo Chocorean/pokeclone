@@ -1,0 +1,187 @@
+{
+  "species": [
+    {
+      "name": "cat_1",
+      "mass_kg": 5.0,
+      "height_m": 0.25,
+      "attributes": [
+        "ears",
+        "eyes",
+        "paws",
+        "tail",
+        "teeth",
+        "hair"
+      ],
+      "stats": {
+        "hp": 120,
+        "attack": 95,
+        "defense": 80,
+        "speed": 100
+      },
+      "individuals": [
+        {
+          "name": "Flammiaou",
+          "element": "Fire",
+          "stats": {
+            "hp": 123,
+            "attack": 91,
+            "defense": 83,
+            "speed": 98
+          }
+        },
+        {
+          "name": "Stratocat",
+          "element": "Air",
+          "stats": {
+            "hp": 117,
+            "attack": 99,
+            "defense": 77,
+            "speed": 103
+          }
+        },
+        {
+          "name": "Matoulot",
+          "element": "Water",
+          "stats": {
+            "hp": 122,
+            "attack": 92,
+            "defense": 81,
+            "speed": 105
+          }
+        },
+        {
+          "name": "Chaterre",
+          "element": "Earth",
+          "stats": {
+            "hp": 118,
+            "attack": 97,
+            "defense": 79,
+            "speed": 100
+          }
+        }
+      ]
+    },
+    {
+      "name": "mouse_1",
+      "mass_kg": 0.5,
+      "height_m": 0.1,
+      "attributes": [
+        "ears",
+        "eyes",
+        "paws",
+        "tail",
+        "teeth",
+        "hair"
+      ],
+      "stats": {
+        "hp": 80,
+        "attack": 70,
+        "defense": 60,
+        "speed": 110
+      },
+      "individuals": [
+        {
+          "name": "Ratcendre",
+          "element": "Fire",
+          "stats": {
+            "hp": 78,
+            "attack": 72,
+            "defense": 63,
+            "speed": 107
+          }
+        },
+        {
+          "name": "Mulovol",
+          "element": "Air",
+          "stats": {
+            "hp": 83,
+            "attack": 68,
+            "defense": 61,
+            "speed": 114
+          }
+        },
+        {
+          "name": "Hydrouris",
+          "element": "Water",
+          "stats": {
+            "hp": 81,
+            "attack": 69,
+            "defense": 59,
+            "speed": 112
+          }
+        },
+        {
+          "name": "Sourilex",
+          "element": "Earth",
+          "stats": {
+            "hp": 79,
+            "attack": 71,
+            "defense": 58,
+            "speed": 109
+          }
+        }
+      ]
+    },
+    {
+      "name": "bird_1",
+      "mass_kg": 0.3,
+      "height_m": 0.15,
+      "attributes": [
+        "wings",
+        "eyes",
+        "beak",
+        "legs",
+        "tail",
+        "hair"
+      ],
+      "stats": {
+        "hp": 70,
+        "attack": 85,
+        "defense": 55,
+        "speed": 130
+      },
+      "individuals": [
+        {
+          "name": "Hirondflamme",
+          "element": "Fire",
+          "stats": {
+            "hp": 72,
+            "attack": 88,
+            "defense": 52,
+            "speed": 133
+          }
+        },
+        {
+          "name": "Piafoudre",
+          "element": "Air",
+          "stats": {
+            "hp": 69,
+            "attack": 84,
+            "defense": 56,
+            "speed": 128
+          }
+        },
+        {
+          "name": "Aqualet",
+          "element": "Water",
+          "stats": {
+            "hp": 71,
+            "attack": 86,
+            "defense": 54,
+            "speed": 131
+          }
+        },
+        {
+          "name": "Rocange",
+          "element": "Earth",
+          "stats": {
+            "hp": 70,
+            "attack": 83,
+            "defense": 57,
+            "speed": 129
+          }
+        }
+      ]
+    }
+  ]
+}
