@@ -10,7 +10,7 @@ use bevy_ecs_ldtk::prelude::*;
 
 use crate::{
     appstate::AppState,
-    character::{Direction, Player, PlayerBundle},
+    character::{Direction, Player, PlayerBundle, move_player_from_input},
     save::Save,
     team::Team,
 };
@@ -33,7 +33,7 @@ impl Plugin for WorldPlugin {
             .register_ldtk_entity::<PlayerBundle>("Player")
             .register_ldtk_entity::<GoalBundle>("Goal")
             .register_ldtk_entity::<NPCsBundle>("NPCs")
-            .add_systems(OnEnter(AppState::LoadGame), load_game)
+            .add_systems(OnEnter(AppState::ResumeGame), load_game)
             .add_systems(
                 OnEnter(AppState::InGame),
                 init_team.run_if(not(resource_exists::<Team>)),
@@ -46,115 +46,13 @@ impl Plugin for WorldPlugin {
                     cache_wall_locations,
                     translate_grid_coords_entities,
                     handle_player_interaction,
-                    camera_follow_player,
                 )
                     .run_if(in_state(AppState::InGame)),
+            )
+            .add_systems(
+                Update,
+                move_player_from_input.run_if(in_state(AppState::InGame)),
             );
-    }
-}
-
-#[derive(Component)]
-pub struct WorldBundle;
-
-#[derive(Resource)]
-pub struct WorldTexture(pub Handle<Image>);
-
-#[derive(Component)]
-pub struct WorldCamera;
-
-/// Load the default world, or the one the player has saved in.
-/// It spawns an additional camera that renders to a texture,
-/// which is then used in the UI.
-/// todo: need to refactor and seperate world and world ui
-pub fn setup_world_ui(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    save_res: Option<Res<Save>>,
-    mut images: ResMut<Assets<Image>>,
-) {
-    commands.spawn((
-        WorldBundle,
-        LdtkWorldBundle {
-            ldtk_handle: asset_server.load("ldtk/map_small.ldtk").into(),
-            ..Default::default()
-        },
-        AudioPlayer::new(asset_server.load("sfx/town.flac")),
-    ));
-    let index = if let Some(save) = save_res {
-        save.level as usize
-    } else {
-        0
-    };
-    commands.insert_resource(LevelSelection::index(index));
-
-    // --- create render texture ---
-    let size = Extent3d {
-        width: 800,
-        height: 600,
-        ..default()
-    };
-    let mut image = Image {
-        texture_descriptor: TextureDescriptor {
-            label: Some("world"),
-            size,
-            dimension: TextureDimension::D2,
-            format: bevy::render::render_resource::TextureFormat::Bgra8UnormSrgb,
-            usage: bevy::render::render_resource::TextureUsages::TEXTURE_BINDING
-                | bevy::render::render_resource::TextureUsages::COPY_DST
-                | bevy::render::render_resource::TextureUsages::RENDER_ATTACHMENT,
-            mip_level_count: 1,
-            sample_count: 1,
-            view_formats: &[],
-        },
-        ..default()
-    };
-    image.resize(size);
-
-    let image_handle = images.add(image);
-
-    commands.spawn((
-        Camera2d,
-        Camera {
-            order: 0,
-            target: RenderTarget::Image(ImageRenderTarget::from(image_handle.clone())),
-            ..default()
-        },
-        // zoom x2
-        Transform::from_scale(Vec3::splat(0.5)),
-        WorldCamera,
-    ));
-
-    // Store texture handle as resource so UI can use it
-    commands.insert_resource(WorldTexture(image_handle));
-}
-
-pub fn camera_follow_player(
-    time: Res<Time>,
-    grid_size: Res<GridSize>,
-    player_q: Query<&GridCoords, With<Player>>,
-    mut camera_q: Query<&mut Transform, With<WorldCamera>>,
-) {
-    if let Ok(player_coords) = player_q.single()
-        && let Ok(mut cam_transform) = camera_q.single_mut()
-    {
-        // let center = bevy_ecs_ldtk::utils::grid_coords_to_translation(
-        //     *player_coords,
-        //     IVec2::splat(grid_size.0),
-        // );
-        // cam_transform.translation = center.extend(cam_transform.translation.z);
-
-        // target position (preserve camera z)
-        let target_xy = bevy_ecs_ldtk::utils::grid_coords_to_translation(
-            *player_coords,
-            IVec2::splat(grid_size.0),
-        );
-        let target = target_xy.extend(cam_transform.translation.z);
-
-        // hardcoded smoothing (higher = snappier)
-        let smoothing: f32 = 4.0;
-        let alpha = 1.0 - (-smoothing * time.delta_secs()).exp();
-
-        cam_transform.translation = cam_transform.translation.lerp(target, alpha);
     }
 }
 

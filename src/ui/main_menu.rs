@@ -1,10 +1,10 @@
 use bevy::prelude::*;
-
-use crate::{
-    appstate::AppState,
-    save::Save,
-    ui::{HOVERED_BUTTON, NORMAL_BUTTON, PRESSED_BUTTON},
+use bevy_egui::{
+    EguiContexts,
+    egui::{self, Color32},
 };
+
+use crate::{appstate::AppState, save::Save};
 
 #[derive(Component)]
 pub struct ContinueButton;
@@ -18,143 +18,62 @@ pub struct OptionsButton;
 #[derive(Component)]
 pub struct MainMenuUI;
 
-pub fn setup_menu(mut commands: Commands) {
-    commands
-        .spawn((
-            MainMenuUI,
-            Node {
-                // center button
-                width: Val::Percent(100.),
-                height: Val::Percent(100.),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                display: Display::Flex,
-                flex_direction: FlexDirection::Column,
-                ..default()
-            },
-        ))
-        .with_children(|parent| {
-            parent.spawn((
-                Text::new("Pokeclone"),
-                TextFont {
-                    font_size: 50.0,
-                    ..default()
-                },
-                TextColor(Color::WHITE),
-            ));
-            parent.spawn(Node {
-                margin: UiRect::bottom(Val::Px(130.)),
-                ..default()
-            });
-            if Save::exists() {
-                parent.spawn((
-                    Button,
-                    ContinueButton,
-                    Node {
-                        width: Val::Px(150.),
-                        height: Val::Px(65.),
-                        // horizontally center child text
-                        justify_content: JustifyContent::Center,
-                        // vertically center child text
-                        align_items: AlignItems::Center,
-                        ..default()
-                    },
-                    BackgroundColor(NORMAL_BUTTON),
-                    children![(
-                        Text::new("Continue"),
-                        TextFont {
-                            font_size: 30.0,
-                            ..default()
-                        },
-                        TextColor(Color::srgb(0.9, 0.9, 0.9)),
-                    )],
-                ));
-            }
-            parent.spawn((
-                Button,
-                NewGameButton,
-                Node {
-                    width: Val::Px(150.),
-                    height: Val::Px(65.),
-                    // horizontally center child text
-                    justify_content: JustifyContent::Center,
-                    // vertically center child text
-                    align_items: AlignItems::Center,
-                    ..default()
-                },
-                BackgroundColor(NORMAL_BUTTON),
-                children![(
-                    Text::new("New game"),
-                    TextFont {
-                        font_size: 30.0,
-                        ..default()
-                    },
-                    TextColor(Color::srgb(0.9, 0.9, 0.9)),
-                )],
-            ));
-            parent.spawn((
-                Button,
-                OptionsButton,
-                Node {
-                    width: Val::Px(150.),
-                    height: Val::Px(65.),
-                    // horizontally center child text
-                    justify_content: JustifyContent::Center,
-                    // vertically center child text
-                    align_items: AlignItems::Center,
-                    ..default()
-                },
-                BackgroundColor(NORMAL_BUTTON),
-                children![(
-                    Text::new("Options"),
-                    TextFont {
-                        font_size: 30.0,
-                        ..default()
-                    },
-                    TextColor(Color::srgb(0.9, 0.9, 0.9)),
-                )],
-            ));
-        });
-}
-
-pub fn hide_menu(mut commands: Commands, mut query: Query<Entity, With<MainMenuUI>>) {
-    let entity = query.single_mut().unwrap();
-    commands.entity(entity).despawn();
-}
-
-pub fn show_menu(
+/// Build the "main menu" window, with a few buttons: Continue (if save exists), New Game, and Options.
+pub fn setup_main_menu_ui(
+    mut contexts: EguiContexts,
     mut next_state: ResMut<NextState<AppState>>,
-    mut interaction_query: Query<
-        (&Interaction, &mut BackgroundColor),
-        (Changed<Interaction>, With<Button>),
-    >,
-    continue_query: Query<&Interaction, With<ContinueButton>>,
-    newgame_query: Query<&Interaction, With<NewGameButton>>,
-    options_query: Query<&Interaction, With<OptionsButton>>,
-) {
-    for (interaction, mut color) in &mut interaction_query {
-        match *interaction {
-            Interaction::Pressed => {
-                *color = PRESSED_BUTTON.into();
-            }
-            Interaction::Hovered => {
-                *color = HOVERED_BUTTON.into();
-            }
-            Interaction::None => {
-                *color = NORMAL_BUTTON.into();
-            }
+) -> Result {
+    // buttons states
+    let mut resume = false;
+    let mut new = false;
+    let mut options = false;
+
+    let ctx = contexts.ctx_mut()?;
+    egui_extras::install_image_loaders(ctx);
+
+    egui::CentralPanel::default().show(ctx, |ui| {
+        ui.vertical_centered(|ui| {
+            ui.add_space(24.);
+            ui.heading(
+                egui::RichText::new("PokeClone game")
+                    .color(Color32::WHITE)
+                    .size(40.0),
+            );
+            ui.add_space(24.);
+            ui.hyperlink("https://github.com/chocorean/pokeclone");
+            ui.add(egui::github_link_file_line!(
+                "https://github.com/chocorean/pokeclone/blob/main/",
+                "Direct link to source code."
+            ));
+            egui::warn_if_debug_build(ui);
+        });
+
+        ui.separator();
+
+        let mut buttons = vec![("New Game", &mut new), ("Options", &mut options)];
+        if Save::exists() {
+            buttons.insert(0, ("Resume", &mut resume));
         }
+
+        ui.vertical_centered(|ui| {
+            for (str, state) in buttons {
+                ui.add_space(12.);
+                *state = ui.button(egui::RichText::new(str).size(24.)).clicked();
+            }
+        });
+    });
+
+    if resume {
+        next_state.set(AppState::ResumeGame);
     }
-    let interaction = continue_query.single().unwrap();
-    if interaction == &Interaction::Pressed {
-        next_state.set(AppState::LoadGame);
-    }
-    let interaction = newgame_query.single().unwrap();
-    if interaction == &Interaction::Pressed {
+
+    if new {
         next_state.set(AppState::InGame);
     }
-    let interaction = options_query.single().unwrap();
-    if interaction == &Interaction::Pressed {
+
+    if options {
         next_state.set(AppState::OptionsMenu);
     }
+
+    Ok(())
 }

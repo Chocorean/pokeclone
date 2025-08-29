@@ -40,10 +40,7 @@ fn main() {
                 }),
         )
         .add_plugins((LdtkPlugin, WorldPlugin, UiPlugin, CamPlugin, DexPlugin))
+        // .add_plugins((CamPlugin, UiPlugin))
         .init_state::<AppState>()
-        .add_systems(
-            Update,
-            move_player_from_input.run_if(in_state(AppState::InGame)),
-        )
         .run();
 }

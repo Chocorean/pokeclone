@@ -75,7 +75,7 @@ pub fn move_player_from_input(
                     // start a random encounter
                     let creature = dex.random();
                     commands.insert_resource(creature);
-                    next_state.set(AppState::Fight);
+                    next_state.set(AppState::InFight);
                 }
             }
         }

@@ -3,38 +3,30 @@ use bevy::prelude::*;
 pub mod fight;
 pub mod game;
 pub mod main_menu;
-use bevy_egui::EguiPlugin;
-use fight::*;
+use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};
 use game::*;
 use main_menu::*;
 
-use crate::{appstate::AppState, world::setup_world_ui};
+use crate::appstate::AppState;
 
 pub struct UiPlugin;
 
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(EguiPlugin::default());
-        app.add_systems(OnEnter(AppState::MainMenu), setup_menu)
-            .add_systems(OnExit(AppState::MainMenu), hide_menu)
-            .add_systems(Update, show_menu.run_if(in_state(AppState::MainMenu)))
-            .add_systems(
-                OnEnter(AppState::InGame),
-                (setup_world_ui, setup_game_ui).chain(),
-            )
-            .add_systems(
-                OnTransition {
-                    exited: AppState::InGame,
-                    entered: AppState::MainMenu,
-                },
-                hide_game_ui,
-            )
-            .add_systems(
-                Update,
-                (handle_button_interactions, handle_game_ui_input)
-                    .run_if(in_state(AppState::InGame)),
-            )
-            .add_systems(Update, fight_ui.run_if(in_state(AppState::Fight)));
+        app.add_systems(
+            EguiPrimaryContextPass,
+            (
+                setup_main_menu_ui.run_if(in_state(AppState::MainMenu)),
+                setup_game_ui.run_if(in_state(AppState::InGame)),
+            ),
+        );
+        // .add_systems(
+        //     Update,
+        //     (handle_button_interactions, handle_game_ui_input)
+        //         .run_if(in_state(AppState::InGame)),
+        // )
+        // .add_systems(Update, fight_ui.run_if(in_state(AppState::InFight)))
     }
 }
 

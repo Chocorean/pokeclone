@@ -13,7 +13,7 @@ pub struct DexPlugin;
 impl Plugin for DexPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(Dex::new());
-        app.init_resource::<Creature>();
+        app.init_resource::<Creature>(); // wild
     }
 }
 
