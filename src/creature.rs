@@ -1,4 +1,4 @@
-use std::fs::File;
+use std::{fs::File, path::Path};
 
 use bevy::{
     app::{App, Plugin},
@@ -216,7 +216,12 @@ impl Creature {
     }
 
     pub fn texture_path(&self) -> String {
-        format!("textures/creatures/{}.png", self.name.to_lowercase())
+        let gif_assets_path = format!("assets/textures/creatures/{}.gif", self.name.to_lowercase());
+        if Path::new(&gif_assets_path).exists() {
+            format!("textures/creatures/{}.gif", self.name.to_lowercase())
+        } else {
+            format!("textures/creatures/{}.png", self.name.to_lowercase())
+        }
     }
 }
 
