@@ -25,8 +25,12 @@ impl Save {
     }
 
     pub fn write(&self) {
-        let content = serde_json::to_string(&self).unwrap();
-        fs::write(SAVE_PATH, content).unwrap()
+        let mut buf = Vec::new();
+        let formatter = serde_json::ser::PrettyFormatter::with_indent(b"    ");
+        let mut ser = serde_json::Serializer::with_formatter(&mut buf, formatter);
+        self.serialize(&mut ser).unwrap();
+        // println!("{}", String::from_utf8(buf).unwrap());
+        fs::write(SAVE_PATH, buf).unwrap();
     }
 
     pub fn exists() -> bool {

@@ -1,11 +1,4 @@
-use bevy::{
-    platform::collections::HashSet,
-    prelude::*,
-    render::{
-        camera::{ImageRenderTarget, RenderTarget},
-        render_resource::{Extent3d, TextureDescriptor, TextureDimension},
-    },
-};
+use bevy::{platform::collections::HashSet, prelude::*};
 use bevy_ecs_ldtk::prelude::*;
 
 use crate::{
@@ -35,63 +28,80 @@ impl Plugin for WorldPlugin {
             .register_ldtk_entity::<NPCsBundle>("NPCs")
             .add_systems(OnEnter(AppState::ResumeGame), load_game)
             .add_systems(
-                OnEnter(AppState::InGame),
-                init_team.run_if(not(resource_exists::<Team>)),
+                OnTransition {
+                    // `init_team` loads an empty team, so it shall only be called when starting a new game.
+                    exited: AppState::MainMenu,
+                    entered: AppState::InGame,
+                },
+                init_team,
             )
             .add_systems(
                 Update,
                 (
+                    apply_save,
                     cache_herb_locations,
-                    update_world,
                     cache_wall_locations,
                     translate_grid_coords_entities,
                     handle_player_interaction,
+                    move_player_from_input,
                 )
                     .run_if(in_state(AppState::InGame)),
             )
             .add_systems(
-                Update,
-                move_player_from_input.run_if(in_state(AppState::InGame)),
+                // When we leave the game
+                // It's not an OnExit because we might leave this state when entering in combat or something
+                OnTransition {
+                    exited: AppState::InGame,
+                    entered: AppState::MainMenu,
+                },
+                clean_up_world,
             );
     }
 }
 
-/// A better name would be load_save, since it just loads the save as a Resource.
-pub fn load_game(mut commands: Commands, mut next_state: ResMut<NextState<AppState>>) {
+/// Load the save as a Resource.
+fn load_game(mut commands: Commands, mut next_state: ResMut<NextState<AppState>>) {
     let save = Save::load().unwrap();
     commands.insert_resource(save.team.clone());
     commands.insert_resource(save);
     next_state.set(AppState::InGame);
 }
 
-pub fn init_team(mut commands: Commands) {
-    commands.insert_resource(Team::new());
-}
-
-/// Load the player's saved position, if any.
-/// Might bug when we change level ?
-pub fn update_world(
+/// Apply the content of the save to the world.
+/// It runs only once because it removes the Save from the resources after loading it,
+/// and does not run if it cannot find a Save resource.
+/// TODO: include the level number
+fn apply_save(
     mut commands: Commands,
     mut player_q: Query<&mut GridCoords, With<Player>>,
     save_res: Option<Res<Save>>,
-    mut has_run: Local<bool>,
 ) {
-    if *has_run {
-        return;
-    }
-
     if let Some(save) = save_res
         && let Ok(mut player_coords) = player_q.single_mut()
     {
         *player_coords = GridCoords::new(save.coords.0, save.coords.1);
         commands.remove_resource::<Save>();
-
-        *has_run = true;
     }
 }
 
-/// todo: only run once per level load? or update after an NPC move?
-pub fn cache_wall_locations(
+fn init_team(mut commands: Commands) {
+    commands.insert_resource(Team::new());
+}
+
+/// Despawn the world and its camera.
+fn clean_up_world(
+    mut commands: Commands,
+    world_q: Single<Entity, With<crate::camera::WorldBundle>>,
+    cam_q: Single<Entity, With<crate::camera::WorldCamera>>,
+) {
+    commands.entity(*world_q).despawn();
+    commands.entity(*cam_q).despawn();
+}
+
+/// todo: seperate wall and npcs
+/// only run once per level load
+/// for NPCs, update schedule instead
+fn cache_wall_locations(
     mut level_walls: ResMut<LevelWalls>,
     mut level_events: EventReader<LevelEvent>,
     grid_size: Res<GridSize>,
@@ -126,6 +136,7 @@ pub fn cache_wall_locations(
     }
 }
 
+/// Store herbs locations for easier retrieval.
 fn cache_herb_locations(
     mut level_walls: ResMut<LevelHerbs>,
     herbs: Query<&GridCoords, With<Herb>>,
@@ -135,7 +146,8 @@ fn cache_herb_locations(
     }
 }
 
-pub fn translate_grid_coords_entities(
+/// Move everything accordingly to the player's movement.
+fn translate_grid_coords_entities(
     grid_size: Res<GridSize>,
     mut grid_coords_entities: Query<(&mut Transform, &GridCoords), Changed<GridCoords>>,
 ) {
@@ -149,6 +161,7 @@ pub fn translate_grid_coords_entities(
 }
 
 #[derive(Default, Resource)]
+/// Store walls and NPCs locations for collision checking.
 pub struct LevelWalls {
     wall_locations: HashSet<GridCoords>,
     level_width: i32,
@@ -166,6 +179,7 @@ impl LevelWalls {
 }
 
 #[derive(Default, Resource)]
+/// Store herbs locations for event trigger.
 pub struct LevelHerbs {
     pub herb_locations: HashSet<GridCoords>,
 }
@@ -206,6 +220,8 @@ struct NPCsBundle {
     entity_instance: EntityInstance,
 }
 
+/// Handle for players interacting with in-world entities, such as NPCs, signs, objects...
+/// Might need some refactoring around reading the json values
 pub fn handle_player_interaction(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     player_q: Query<(&GridCoords, &Direction), With<Player>>,
@@ -214,8 +230,6 @@ pub fn handle_player_interaction(
     if keyboard_input.just_pressed(KeyCode::Enter) {
         let (player_grid_coords, direction) = player_q.single().unwrap();
         let facing_coords = direction.next_coords(*player_grid_coords);
-        // Here you would check if there's an NPC or object at facing_coords
-        // and trigger a dialogue or interaction event.
         for (npc_coords, npc) in npc_q.iter() {
             if npc_coords == &facing_coords {
                 // Access custom fields by name
