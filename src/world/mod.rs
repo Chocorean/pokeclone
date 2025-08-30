@@ -8,9 +8,6 @@ use crate::{
     team::Team,
 };
 
-// npc trainer uuid
-// ca7c1690-5e50-11f0-85ca-e96bd84a6222
-
 #[derive(Resource)]
 pub struct GridSize(pub i32);
 
@@ -20,11 +17,13 @@ impl Plugin for WorldPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<LevelWalls>()
             .init_resource::<LevelHerbs>()
+            .init_resource::<LevelGoals>()
             .insert_resource(GridSize(16))
             .register_ldtk_int_cell_for_layer::<WallBundle>("Walls", 1)
             .register_ldtk_int_cell_for_layer::<HerbBundle>("Walls", 2)
-            .register_ldtk_entity::<PlayerBundle>("Player")
             .register_ldtk_entity::<GoalBundle>("Goal")
+            .register_ldtk_entity::<EntryBundle>("Entry")
+            .register_ldtk_entity::<PlayerBundle>("Player")
             .register_ldtk_entity::<NPCsBundle>("NPCs")
             .add_systems(OnEnter(AppState::ResumeGame), load_game)
             .add_systems(
@@ -40,9 +39,11 @@ impl Plugin for WorldPlugin {
                 (
                     apply_save,
                     cache_herb_locations,
+                    cache_goal_locations,
                     cache_wall_locations,
                     translate_grid_coords_entities,
                     handle_player_interaction,
+                    handle_through_goal,
                     move_player_from_input,
                 )
                     .run_if(in_state(AppState::InGame)),
@@ -98,6 +99,34 @@ fn clean_up_world(
     commands.entity(*cam_q).despawn();
 }
 
+// WALLS
+
+#[derive(Default, Component)]
+pub struct Wall;
+
+#[derive(Default, Bundle, LdtkIntCell)]
+pub struct WallBundle {
+    wall: Wall,
+}
+
+#[derive(Default, Resource)]
+/// Store walls and NPCs locations for collision checking.
+pub struct LevelWalls {
+    wall_locations: HashSet<GridCoords>,
+    level_width: i32,
+    level_height: i32,
+}
+
+impl LevelWalls {
+    pub fn in_wall(&self, grid_coords: &GridCoords) -> bool {
+        grid_coords.x < 0
+            || grid_coords.y < 0
+            || grid_coords.x >= self.level_width
+            || grid_coords.y >= self.level_height
+            || self.wall_locations.contains(grid_coords)
+    }
+}
+
 /// todo: seperate wall and npcs
 /// only run once per level load
 /// for NPCs, update schedule instead
@@ -136,6 +165,22 @@ fn cache_wall_locations(
     }
 }
 
+// HERBS
+
+#[derive(Default, Component)]
+pub struct Herb;
+
+#[derive(Default, Bundle, LdtkIntCell)]
+pub struct HerbBundle {
+    herb: Herb,
+}
+
+#[derive(Default, Resource)]
+/// Store herbs locations for event trigger.
+pub struct LevelHerbs {
+    pub herb_locations: HashSet<GridCoords>,
+}
+
 /// Store herbs locations for easier retrieval.
 fn cache_herb_locations(
     mut level_walls: ResMut<LevelHerbs>,
@@ -146,65 +191,10 @@ fn cache_herb_locations(
     }
 }
 
-/// Move everything accordingly to the player's movement.
-fn translate_grid_coords_entities(
-    grid_size: Res<GridSize>,
-    mut grid_coords_entities: Query<(&mut Transform, &GridCoords), Changed<GridCoords>>,
-) {
-    for (mut transform, grid_coords) in grid_coords_entities.iter_mut() {
-        transform.translation = bevy_ecs_ldtk::utils::grid_coords_to_translation(
-            *grid_coords,
-            IVec2::splat(grid_size.0),
-        )
-        .extend(transform.translation.z);
-    }
-}
+// NPCs
 
-#[derive(Default, Resource)]
-/// Store walls and NPCs locations for collision checking.
-pub struct LevelWalls {
-    wall_locations: HashSet<GridCoords>,
-    level_width: i32,
-    level_height: i32,
-}
-
-impl LevelWalls {
-    pub fn in_wall(&self, grid_coords: &GridCoords) -> bool {
-        grid_coords.x < 0
-            || grid_coords.y < 0
-            || grid_coords.x >= self.level_width
-            || grid_coords.y >= self.level_height
-            || self.wall_locations.contains(grid_coords)
-    }
-}
-
-#[derive(Default, Resource)]
-/// Store herbs locations for event trigger.
-pub struct LevelHerbs {
-    pub herb_locations: HashSet<GridCoords>,
-}
-
-#[derive(Default, Component)]
-pub struct Wall;
-
-#[derive(Default, Bundle, LdtkIntCell)]
-pub struct WallBundle {
-    wall: Wall,
-}
-
-#[derive(Default, Component)]
-pub struct Herb;
-
-#[derive(Default, Bundle, LdtkIntCell)]
-pub struct HerbBundle {
-    herb: Herb,
-}
-
-#[derive(Default, Bundle, LdtkEntity)]
-struct GoalBundle {
-    #[sprite_sheet]
-    sprite_sheet: Sprite,
-}
+// npc trainer uuid
+// ca7c1690-5e50-11f0-85ca-e96bd84a6222
 
 #[derive(Default, Component, Debug)]
 pub struct NPC;
@@ -248,4 +238,102 @@ pub fn handle_player_interaction(
             }
         }
     }
+}
+
+/// GOALS
+
+// level 0 Goal
+// f634c0c0-5e50-11f0-a81f-7d5d71ee8bd5
+// level 1 goal
+// 99a501a0-8560-11f0-ab4e-67d06badcd69
+
+#[derive(Default, Component)]
+struct Goal;
+
+#[derive(Default, Bundle, LdtkEntity)]
+struct GoalBundle {
+    goal: Goal,
+    #[sprite_sheet]
+    sprite_sheet: Sprite,
+    #[grid_coords]
+    grid_coords: GridCoords,
+    #[from_entity_instance]
+    entity_instance: EntityInstance,
+}
+
+#[derive(Default, Resource)]
+struct LevelGoals {
+    pub goal_locations: HashSet<GridCoords>,
+}
+
+fn cache_goal_locations(
+    mut level_goals: ResMut<LevelGoals>,
+    goals: Query<&GridCoords, With<Goal>>,
+) {
+    for goal_coords in goals.iter() {
+        level_goals.goal_locations.insert(*goal_coords);
+    }
+}
+
+fn handle_through_goal(
+    mut commands: Commands,
+    level_goals: ResMut<LevelGoals>,
+    mut player_q: Single<&mut GridCoords, With<Player>>,
+    goal_q: Query<(&EntityInstance, &GridCoords), (With<Goal>, Without<Player>)>,
+    entry_q: Query<(&EntityInstance, &GridCoords), (With<Goal>, Without<Player>)>,
+) {
+    let coords = player_q.clone();
+    if level_goals.goal_locations.contains(&coords) {
+        // only triggerred if the player walks on top of a goal
+        for (entity, g_coords) in goal_q {
+            if *g_coords == **player_q {
+                // only run if player is walking on top of the goal
+                let destination_value = entity
+                    .get_field_instance("destination")
+                    .unwrap()
+                    .value
+                    .clone();
+                let entry_entity_ref = match destination_value {
+                    FieldValue::EntityRef(Some(x)) => x,
+                    _ => panic!("Something aint right in {} metadata", entity.iid),
+                };
+                let world_dest = entry_entity_ref.level_iid.clone();
+                // Does not work because the neighbors level are not loaded.
+                let coords_dest = entry_q
+                    .iter()
+                    .find(|e| e.0.iid == entry_entity_ref.entity_iid)
+                    .unwrap()
+                    .1;
+                commands.insert_resource(LevelSelection::Iid(LevelIid::new(world_dest)));
+                **player_q = *coords_dest;
+            }
+        }
+    }
+}
+
+/// Move everything accordingly to the player's movement.
+fn translate_grid_coords_entities(
+    grid_size: Res<GridSize>,
+    mut grid_coords_entities: Query<(&mut Transform, &GridCoords), Changed<GridCoords>>,
+) {
+    for (mut transform, grid_coords) in grid_coords_entities.iter_mut() {
+        transform.translation = bevy_ecs_ldtk::utils::grid_coords_to_translation(
+            *grid_coords,
+            IVec2::splat(grid_size.0),
+        )
+        .extend(transform.translation.z);
+    }
+}
+
+// ENTRIES
+#[derive(Default, Component)]
+struct Entry;
+
+#[derive(Default, Bundle, LdtkEntity)]
+struct EntryBundle {
+    entry: Entry,
+    #[grid_coords]
+    grid_coords: GridCoords,
+    #[from_entity_instance]
+    entity_instance: EntityInstance,
 }

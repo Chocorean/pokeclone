@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
-use rand::{Rng, RngCore};
+use rand::Rng;
 
 use crate::{
     appstate::AppState,
