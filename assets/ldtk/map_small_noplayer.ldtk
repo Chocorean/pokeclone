@@ -840,41 +840,6 @@
 		}
 	], "entities": [
 		{
-			"identifier": "Player",
-			"uid": 21,
-			"tags": [],
-			"exportToToc": false,
-			"allowOutOfBounds": false,
-			"doc": null,
-			"width": 16,
-			"height": 16,
-			"resizableX": false,
-			"resizableY": false,
-			"minWidth": null,
-			"maxWidth": null,
-			"minHeight": null,
-			"maxHeight": null,
-			"keepAspectRatio": false,
-			"tileOpacity": 1,
-			"fillOpacity": 0.08,
-			"lineOpacity": 0,
-			"hollow": false,
-			"color": "#0099DB",
-			"renderMode": "Tile",
-			"showName": true,
-			"tilesetId": 24,
-			"tileRenderMode": "FitInside",
-			"tileRect": { "tilesetUid": 24, "x": 0, "y": 0, "w": 16, "h": 16 },
-			"uiTileRect": null,
-			"nineSliceBorders": [],
-			"maxCount": 0,
-			"limitScope": "PerLevel",
-			"limitBehavior": "MoveLastOne",
-			"pivotX": 0,
-			"pivotY": 0,
-			"fieldDefs": []
-		},
-		{
 			"identifier": "NPCs",
 			"uid": 112,
 			"tags": [],
@@ -1117,13 +1082,13 @@
 		},
 		{
 			"__cWid": 3,
-			"__cHei": 4,
+			"__cHei": 1,
 			"identifier": "Player",
 			"uid": 24,
-			"relPath": "../textures/player.png",
+			"relPath": "../textures/player_sq.png",
 			"embedAtlas": null,
-			"pxWid": 42,
-			"pxHei": 63,
+			"pxWid": 48,
+			"pxHei": 16,
 			"tileGridSize": 16,
 			"spacing": 1,
 			"padding": 0,
@@ -1132,7 +1097,7 @@
 			"enumTags": [],
 			"customData": [],
 			"savedSelections": [],
-			"cachedPixelData": { "opaqueTiles": "001001001111", "averageColors": "aa98ba980000aa99aaaa0000a888a8980000000000000000" }
+			"cachedPixelData": { "opaqueTiles": "001", "averageColors": "a88898880000" }
 		},
 		{
 			"__cWid": 3,
@@ -1270,22 +1235,6 @@
 							],
 							"__worldX": 104,
 							"__worldY": 40
-						},
-						{
-							"__identifier": "Player",
-							"__grid": [10,8],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 24, "x": 0, "y": 0, "w": 16, "h": 16 },
-							"__smartColor": "#0099DB",
-							"iid": "627abbe0-8560-11f0-865d-c1fc1d591831",
-							"width": 16,
-							"height": 16,
-							"defUid": 21,
-							"px": [160,128],
-							"fieldInstances": [],
-							"__worldX": 80,
-							"__worldY": 64
 						},
 						{
 							"__identifier": "Entry",
@@ -2179,22 +2128,6 @@
 							"px": [32,64],
 							"fieldInstances": [],
 							"__worldX": 208,
-							"__worldY": -80
-						},
-						{
-							"__identifier": "Player",
-							"__grid": [1,4],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 24, "x": 0, "y": 0, "w": 16, "h": 16 },
-							"__smartColor": "#0099DB",
-							"iid": "7baef770-8560-11f0-865d-f3071d1c8c03",
-							"width": 16,
-							"height": 16,
-							"defUid": 21,
-							"px": [16,64],
-							"fieldInstances": [],
-							"__worldX": 192,
 							"__worldY": -80
 						}
 					]

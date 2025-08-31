@@ -6,13 +6,14 @@ mod appstate;
 use appstate::AppState;
 
 mod camera;
+use crate::animation::AnimationsPlugin;
 use crate::camera::*;
 
-mod character;
-use crate::character::*;
+mod player;
 
 mod ui;
 use crate::creature::DexPlugin;
+use crate::player::PlayerPlugin;
 use crate::ui::UiPlugin;
 
 mod world;
@@ -23,6 +24,8 @@ mod save;
 mod team;
 
 mod creature;
+
+mod animation;
 
 fn main() {
     App::new()
@@ -39,7 +42,15 @@ fn main() {
                     ..default()
                 }),
         )
-        .add_plugins((LdtkPlugin, WorldPlugin, UiPlugin, CamPlugin, DexPlugin))
+        .add_plugins((
+            LdtkPlugin,
+            WorldPlugin,
+            UiPlugin,
+            CamPlugin,
+            DexPlugin,
+            PlayerPlugin,
+            AnimationsPlugin,
+        ))
         // .add_plugins((CamPlugin, UiPlugin))
         .init_state::<AppState>()
         .run();

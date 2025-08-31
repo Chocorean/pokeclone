@@ -8,7 +8,7 @@ use bevy::{
 use bevy_ecs_ldtk::{GridCoords, LdtkWorldBundle, LevelSelection};
 use bevy_egui::EguiUserTextures;
 
-use crate::{appstate::AppState, character::Player, save::Save, world::GridSize};
+use crate::{appstate::AppState, player::Player, save::Save, world::GridSize};
 
 pub struct CamPlugin;
 

@@ -3,7 +3,7 @@ use bevy_ecs_ldtk::prelude::*;
 
 use crate::{
     appstate::AppState,
-    character::{Direction, Player, PlayerBundle, move_player_from_input},
+    player::{Direction, Player, PlayerBundle, move_player_from_input},
     save::Save,
     team::Team,
 };

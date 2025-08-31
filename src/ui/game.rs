@@ -5,7 +5,7 @@ use bevy_egui::{
     egui::{self, Color32, Frame, RichText},
 };
 
-use crate::{appstate::AppState, camera::WorldTexture, character::Player, save::Save, team::Team};
+use crate::{appstate::AppState, camera::WorldTexture, player::Player, save::Save, team::Team};
 
 #[derive(Component)]
 pub struct GameUI;
