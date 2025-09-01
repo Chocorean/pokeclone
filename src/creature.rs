@@ -26,9 +26,9 @@ pub struct Dex {
 
 impl Dex {
     pub fn new() -> Self {
-        let fs = File::open("assets/creatures/gen1.json").expect("Could not open creature file");
-        let json: serde_json::Value =
-            serde_json::from_reader(fs).expect("file should be proper JSON");
+        // Not using std::fs for WASM compatibility
+        let content = include_str!("../assets/creatures/gen1.json");
+        let json: serde_json::Value = serde_json::from_str(content).unwrap();
         let mut species = Vec::new();
         for sp in json["species"]
             .as_array()
