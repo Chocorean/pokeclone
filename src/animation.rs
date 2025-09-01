@@ -75,7 +75,6 @@ pub fn execute_animations(
             // ...and it IS the last frame, then we move back to the first frame and stop.
             atlas.index = config.first_sprite_index;
             config.playing = false;
-            dbg!(config.clone(), atlas.index);
         } else {
             // ...and it is NOT the last frame, then we move to the next frame...
             atlas.index += 1;

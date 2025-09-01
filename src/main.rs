@@ -19,13 +19,11 @@ use crate::ui::UiPlugin;
 mod world;
 use crate::world::WorldPlugin;
 
-mod save;
-
-mod team;
-
-mod creature;
-
 mod animation;
+mod creature;
+mod event;
+mod save;
+mod team;
 
 fn main() {
     App::new()

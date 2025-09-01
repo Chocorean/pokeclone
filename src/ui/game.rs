@@ -1,11 +1,10 @@
 use bevy::prelude::*;
-use bevy_ecs_ldtk::{GridCoords, LevelSelection};
 use bevy_egui::{
     EguiContexts,
     egui::{self, Color32, Frame, RichText},
 };
 
-use crate::{appstate::AppState, camera::WorldTexture, player::Player, save::Save, team::Team};
+use crate::{appstate::AppState, camera::WorldTexture, event::NewSaveEvent, team::Team};
 
 #[derive(Component)]
 pub struct GameUI;
@@ -26,9 +25,8 @@ pub fn setup_game_ui(
     mut contexts: EguiContexts,
     // mut egui_user_textures: ResMut<EguiUserTextures>,
     world_tex: Res<WorldTexture>,
-    level_res: Res<LevelSelection>,
-    player_q: Query<&GridCoords, With<Player>>,
     team: Res<Team>,
+    mut event_writer: EventWriter<NewSaveEvent>,
 ) -> Result {
     // textures
     let world_texture_id = contexts.image_id(&world_tex).unwrap();
@@ -100,25 +98,10 @@ pub fn setup_game_ui(
 
     // buttons actions
     if save {
-        new_save(level_res, player_q, team);
+        event_writer.write(NewSaveEvent {});
     }
 
     Ok(())
-}
-
-/// Gather what matters and save it all.
-/// Might be a better way to do so, is that Events ? <-- TODO investigate
-fn new_save(
-    level_res: Res<LevelSelection>,
-    player_q: Query<&GridCoords, With<Player>>,
-    team: Res<Team>,
-) {
-    let level_id = match *level_res {
-        LevelSelection::Indices(x) => x.level,
-        _ => todo!("not supported"),
-    };
-    let coords = player_q.single().unwrap();
-    Save::new(level_id as i32, *coords, team.clone());
 }
 
 /// Game UI specific input handling
@@ -126,13 +109,11 @@ fn new_save(
 pub fn handle_game_ui_input(
     mut next_state: ResMut<NextState<AppState>>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    player_q: Query<&GridCoords, With<Player>>,
-    level_res: Res<LevelSelection>,
-    team: Res<Team>,
+    mut event_writer: EventWriter<NewSaveEvent>,
 ) {
     if keyboard_input.just_pressed(KeyCode::Escape) {
         next_state.set(AppState::MainMenu);
     } else if keyboard_input.just_pressed(KeyCode::F1) {
-        new_save(level_res, player_q, team);
+        event_writer.write(NewSaveEvent {});
     }
 }
