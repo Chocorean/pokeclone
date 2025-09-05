@@ -4,7 +4,7 @@ use bevy_egui::{
     egui::{self, Color32},
 };
 
-use crate::{appstate::AppState, save::Save};
+use crate::{AppState, save::Save};
 
 #[derive(Component)]
 pub struct ContinueButton;

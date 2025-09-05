@@ -1,4 +1,3 @@
-use bevy::color::palettes::tailwind::GREEN_50;
 use bevy::prelude::*;
 
 use crate::team::Team;

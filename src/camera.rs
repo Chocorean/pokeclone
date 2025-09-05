@@ -8,17 +8,31 @@ use bevy::{
 use bevy_ecs_ldtk::{GridCoords, LdtkWorldBundle, LevelSelection};
 use bevy_egui::EguiUserTextures;
 
-use crate::{appstate::AppState, player::Player, save::Save, world::GridSize};
+use crate::{AppState, player::Player, save::Save, world::GridSize};
 
 pub struct CamPlugin;
 
 impl Plugin for CamPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PreStartup, setup_main_camera)
-            .add_systems(OnEnter(AppState::InGame), setup_world_camera)
+            .add_systems(
+                OnTransition {
+                    exited: AppState::MainMenu,
+                    entered: AppState::InGame,
+                },
+                setup_world_camera,
+            )
+            .add_systems(
+                OnTransition {
+                    exited: AppState::ResumeGame,
+                    entered: AppState::InGame,
+                },
+                setup_world_camera,
+            )
             .add_systems(
                 Update,
-                camera_follow_player.run_if(in_state(AppState::InGame)),
+                camera_follow_player
+                    .run_if(in_state(AppState::InFight).or(in_state(AppState::InGame))),
             );
     }
 }
@@ -66,7 +80,7 @@ pub fn setup_world_camera(
             ldtk_handle: asset_server.load("ldtk/map_small.ldtk").into(),
             ..Default::default()
         },
-        AudioPlayer::new(asset_server.load("sfx/town.flac")),
+        // AudioPlayer::new(asset_server.load("sfx/town.flac")),
     ));
     let index = if let Some(save) = save_res {
         save.level as usize
@@ -128,13 +142,7 @@ pub fn camera_follow_player(
     if let Ok(player_coords) = player_q.single()
         && let Ok(mut cam_transform) = camera_q.single_mut()
     {
-        // let center = bevy_ecs_ldtk::utils::grid_coords_to_translation(
-        //     *player_coords,
-        //     IVec2::splat(grid_size.0),
-        // );
-        // cam_transform.translation = center.extend(cam_transform.translation.z);
-
-        // target position (preserve camera z)
+        // target position
         let target_xy = bevy_ecs_ldtk::utils::grid_coords_to_translation(
             *player_coords,
             IVec2::splat(grid_size.0),

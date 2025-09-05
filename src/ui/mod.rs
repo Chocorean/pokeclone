@@ -7,7 +7,7 @@ use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};
 use game::*;
 use main_menu::*;
 
-use crate::appstate::AppState;
+use crate::AppState;
 
 pub struct UiPlugin;
 
@@ -20,6 +20,10 @@ impl Plugin for UiPlugin {
                 setup_main_menu_ui.run_if(in_state(AppState::MainMenu)),
                 (setup_game_ui, handle_game_ui_input).run_if(in_state(AppState::InGame)),
             ),
+        );
+        app.add_systems(
+            EguiPrimaryContextPass,
+            setup_game_ui.run_if(in_state(AppState::InFight)),
         );
         // .add_systems(Update, fight_ui.run_if(in_state(AppState::InFight)))
     }
