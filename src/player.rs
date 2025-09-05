@@ -1,11 +1,10 @@
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
-use rand::Rng;
 
 use crate::{
+    AppState,
     animation::{AnimationConfig, trigger_animation},
-    appstate::AppState,
-    creature::Dex,
+    event::MoveInBushEvent,
     world::{LevelHerbs, LevelWalls},
 };
 
@@ -16,6 +15,11 @@ impl Plugin for PlayerPlugin {
         app.add_systems(
             Update,
             setup_player_atlas.run_if(in_state(AppState::InGame)),
+        )
+        .add_systems(OnEnter(AppState::InFight), register_fight_animation)
+        .add_systems(
+            Update,
+            play_fight_animation.run_if(in_state(AppState::InFight)),
         );
     }
 }
@@ -45,7 +49,6 @@ pub struct PlayerBundle {
 
 /// Overwrite LTDK's atlas configuration.
 fn setup_player_atlas(
-    // mut commands: Commands,
     player_q: Single<&mut Sprite, With<Player>>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
     mut has_run: Local<bool>,
@@ -79,7 +82,6 @@ impl Direction {
 }
 
 pub fn move_player_from_input(
-    mut commands: Commands,
     player_q: Single<
         (
             &mut GridCoords,
@@ -92,8 +94,7 @@ pub fn move_player_from_input(
     input: Res<ButtonInput<KeyCode>>,
     level_walls: Res<LevelWalls>,
     level_herbs: Res<LevelHerbs>,
-    mut next_state: ResMut<NextState<AppState>>,
-    dex: Res<Dex>,
+    mut event_writer: EventWriter<MoveInBushEvent>,
 ) {
     // Read keyboard input
     let (mut player_grid_coords, mut direction, mut animation, mut sprite) = player_q.into_inner();
@@ -116,20 +117,26 @@ pub fn move_player_from_input(
     sprite.texture_atlas.as_mut().unwrap().index = animation.first_sprite_index;
     trigger_animation(&mut animation);
 
-    // Update coords and do stuff
+    // Update coords and trigger other stuff
     let destination = direction.next_coords(*player_grid_coords);
     if !level_walls.in_wall(&destination) {
         *player_grid_coords = destination;
-        // TODO Find another way to trigger this. Events?
         if level_herbs.herb_locations.contains(&destination) {
-            let mut rng = rand::rng();
-            let nbr = rng.random::<u8>();
-            if nbr < 64 {
-                // start a random encounter
-                let creature = dex.random();
-                commands.insert_resource(creature);
-                next_state.set(AppState::InFight);
-            }
+            event_writer.write(MoveInBushEvent {});
         }
     }
 }
+
+fn register_fight_animation(
+    player_q: Single<&mut Sprite, With<Player>>,
+    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
+    mut has_run: Local<bool>,
+) {
+    if *has_run {
+        return;
+    }
+
+    *has_run = true;
+}
+
+fn play_fight_animation() {}

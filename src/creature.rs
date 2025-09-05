@@ -1,4 +1,4 @@
-use std::{fs::File, path::Path};
+use std::path::Path;
 
 use bevy::{
     app::{App, Plugin},
@@ -13,7 +13,7 @@ pub struct DexPlugin;
 impl Plugin for DexPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(Dex::new());
-        app.init_resource::<Creature>(); // wild
+        app.init_resource::<Creature>(); // wild encounter
     }
 }
 

@@ -1,29 +1,42 @@
+mod animation;
+mod camera;
+mod creature;
+mod event;
+mod player;
+mod save;
+mod team;
+mod ui;
+mod world;
+
 use bevy::prelude::*;
+use bevy::state::state::States;
 use bevy::window::WindowResolution;
 use bevy_ecs_ldtk::prelude::*;
 
-mod appstate;
-use appstate::AppState;
-
-mod camera;
 use crate::animation::AnimationsPlugin;
 use crate::camera::*;
-
-mod player;
-
-mod ui;
 use crate::creature::DexPlugin;
+use crate::event::EventsPlugin;
 use crate::player::PlayerPlugin;
 use crate::ui::UiPlugin;
 
-mod world;
 use crate::world::WorldPlugin;
 
-mod animation;
-mod creature;
-mod event;
-mod save;
-mod team;
+#[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]
+/// States of the game
+pub enum AppState {
+    /// `MainMenu` is the initial state, when the main menu UI is displayed.
+    #[default]
+    MainMenu,
+    /// `ResumeGame` is a preliminary state to `InGame`. It loads the save before running the game.
+    ResumeGame,
+    /// `InGame` is the state when we can play. The world, team and actions UIs are displayed.
+    InGame,
+    /// `InFight` is when a battle occurs. The world is hidden, the fight is displayed instead, and the actions UI is updated.
+    InFight,
+    /// `OptionsMenu` is the state when the options UI is displayed.
+    OptionsMenu,
+}
 
 fn main() {
     App::new()
@@ -42,6 +55,7 @@ fn main() {
         )
         .add_plugins((
             LdtkPlugin,
+            EventsPlugin,
             WorldPlugin,
             UiPlugin,
             CamPlugin,
@@ -49,7 +63,6 @@ fn main() {
             PlayerPlugin,
             AnimationsPlugin,
         ))
-        // .add_plugins((CamPlugin, UiPlugin))
         .init_state::<AppState>()
         .run();
 }

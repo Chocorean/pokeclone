@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use bevy::prelude::*;
 
-use crate::appstate::AppState;
+use crate::AppState;
 
 pub struct AnimationsPlugin;
 

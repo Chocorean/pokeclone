@@ -2,7 +2,7 @@ use bevy::{platform::collections::HashSet, prelude::*};
 use bevy_ecs_ldtk::prelude::*;
 
 use crate::{
-    appstate::AppState,
+    AppState,
     player::{Direction, Player, PlayerBundle, move_player_from_input},
     save::Save,
     team::Team,
@@ -47,6 +47,11 @@ impl Plugin for WorldPlugin {
                     move_player_from_input,
                 )
                     .run_if(in_state(AppState::InGame)),
+            )
+            // Some systems still run in `AppState::InFight` state
+            .add_systems(
+                Update,
+                translate_grid_coords_entities.run_if(in_state(AppState::InFight)),
             )
             .add_systems(
                 // When we leave the game
