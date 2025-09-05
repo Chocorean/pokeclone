@@ -15,11 +15,6 @@ impl Plugin for PlayerPlugin {
         app.add_systems(
             Update,
             setup_player_atlas.run_if(in_state(AppState::InGame)),
-        )
-        .add_systems(OnEnter(AppState::InFight), register_fight_animation)
-        .add_systems(
-            Update,
-            play_fight_animation.run_if(in_state(AppState::InFight)),
         );
     }
 }
@@ -126,17 +121,3 @@ pub fn move_player_from_input(
         }
     }
 }
-
-fn register_fight_animation(
-    player_q: Single<&mut Sprite, With<Player>>,
-    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
-    mut has_run: Local<bool>,
-) {
-    if *has_run {
-        return;
-    }
-
-    *has_run = true;
-}
-
-fn play_fight_animation() {}
