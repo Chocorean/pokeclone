@@ -45,6 +45,7 @@ impl Plugin for WorldPlugin {
                     handle_player_interaction,
                     handle_through_goal,
                     move_player_from_input,
+                    display_prism_above_npc,
                 )
                     .run_if(in_state(AppState::InGame)),
             )
@@ -242,6 +243,57 @@ pub fn handle_player_interaction(
                 println!("NPC says: {}", chat);
             }
         }
+    }
+}
+
+#[derive(Component)]
+struct Prism;
+
+fn display_prism_above_npc(
+    mut commands: Commands,
+    npc_q: Query<(&EntityInstance, &GridCoords), With<NPC>>,
+    assets_server: ResMut<AssetServer>,
+    mut has_run: Local<bool>,
+    grid_size: Res<GridSize>,
+) {
+    if *has_run {
+        return;
+    }
+    let handle = assets_server.load("textures/animations/blue_prism.gif");
+
+    // Only spawn on top of npcs with fight
+    for (_, coords) in npc_q.iter().filter(|(e, _)| {
+        let fight = e
+            .field_instances
+            .iter()
+            .find(|f| f.identifier == "fight")
+            .unwrap()
+            .value
+            .clone();
+        match fight {
+            FieldValue::Bool(true) => true,
+            _ => false,
+        }
+    }) {
+        let prism_coords = GridCoords::new(coords.x, coords.y + 1);
+        commands.spawn((
+            Prism {
+                // grid_coords: prism_coords,
+            },
+            Sprite {
+                image: handle.clone(),
+                custom_size: Some(Vec2::new(16., 16.)),
+                ..default()
+            },
+            Transform::from_translation(
+                bevy_ecs_ldtk::utils::grid_coords_to_translation(
+                    prism_coords,
+                    IVec2::splat(grid_size.0),
+                )
+                .extend(5.),
+            ),
+        ));
+        *has_run = true;
     }
 }
 
