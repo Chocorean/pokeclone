@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 
-pub mod fight;
 pub mod game;
 pub mod main_menu;
 use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};

@@ -1,10 +1,10 @@
 use bevy::prelude::*;
 use bevy_egui::{
-    EguiContexts,
+    EguiContexts, EguiUserTextures,
     egui::{self, Color32, Frame, Pos2, Rect, RichText},
 };
 
-use crate::{AppState, camera::WorldTexture, event::NewSaveEvent, team::Team};
+use crate::{AppState, camera::WorldTexture, creature::Creature, event::NewSaveEvent, team::Team};
 
 #[derive(Component)]
 pub struct GameUI;
@@ -25,21 +25,23 @@ pub struct SaveButton;
 /// What it shows depends on the current `AppState`
 pub fn setup_game_ui(
     mut contexts: EguiContexts,
-    world_tex: Res<WorldTexture>,
-    team: Res<Team>,
     mut event_writer: EventWriter<NewSaveEvent>,
+    wild_creature: Option<Res<Creature>>,
     state: Res<State<AppState>>,
+    team: Res<Team>,
+    world_tex: Res<WorldTexture>,
     mut next_state: ResMut<NextState<AppState>>,
+    // asset_server: Res<AssetServer>,
+    // egui_textures: Res<EguiUserTextures>,
 ) -> Result {
     // textures
     let world_texture_id = contexts.image_id(&world_tex).unwrap();
 
     // buttons
     let mut save = false;
-    let mut attack = false;
-    let mut attack_choice: Option<u8> = None;
-    let mut tame = false;
-    let mut flee = false;
+    // dex
+    // map
+    // etc
 
     let ctx = contexts.ctx_mut()?;
 
@@ -58,6 +60,15 @@ pub fn setup_game_ui(
                         .fill(Color32::GRAY)
                         .show(ui, |ui| {
                             ui.horizontal(|ui| {
+                                // Crash bc in camera.rs, egui_textures is used as well. Need to refactor
+                                // let handle: Handle<Image> = asset_server.load(member.sprite());
+                                // let texture_id = egui_textures.image_id(&handle).unwrap();
+                                // // let sized = SizedTexture::from(texture_id);
+                                // let image = egui::Image::from_texture((
+                                //     texture_id,
+                                //     egui::Vec2::from([64., 64.]),
+                                // ));
+                                // ui.add(image);
                                 ui.add(
                                     egui::Image::new(format!("file://assets/{}", member.sprite()))
                                         .fit_to_exact_size(egui::Vec2::new(64., 64.)),
@@ -94,14 +105,12 @@ pub fn setup_game_ui(
         ui.horizontal_centered(|ui| {
             if *state == AppState::InGame {
                 save = ui.button("Save").clicked();
-            } else if *state == AppState::InFight {
-                attack = ui.button("Attack").clicked();
-                // todo build proper attack ui
-                tame = ui.button("Tame").clicked();
-                flee = ui.button("Flee").clicked();
+            } else {
+                ui.disable();
             }
         });
     });
+
     egui::CentralPanel::default().show(ctx, |ui| {
         let max_rect = ui.max_rect();
         ui.centered_and_justified(|ui| {
@@ -111,19 +120,50 @@ pub fn setup_game_ui(
             ));
         });
         if *state == AppState::InFight {
-            println!("{}", max_rect);
-            let rect = egui::Rect::from_min_size(
-                Pos2::new(
-                    max_rect.width() / 2. - 4.,
-                    max_rect.height() / 2. - 16.,
-                    // 400., 400.,
-                ),
-                bevy_egui::egui::Vec2::new(24., 24.),
-            );
-            ui.put(
-                rect,
-                egui::Image::new("file://assets/textures/animations/blue_prism.gif"),
-            );
+            let (title, foes) = if let Some(creature) = wild_creature {
+                (
+                    format!("A wild {} wants to fight!", creature.name),
+                    vec![creature.clone()],
+                )
+            } else {
+                todo!("need to implment fight versus trainer");
+                (format!("A trainer wants to fight!"), vec![])
+            };
+            egui::Window::new(title)
+                .max_height(max_rect.height() * 0.5)
+                .show(ctx, |ui| {
+                    ui.vertical(|ui| {
+                        ui.horizontal(|ui| {
+                            ui.add(
+                                egui::Image::new(format!("file://assets/{}", team.0[0].sprite()))
+                                    .uv(Rect::from_min_max(Pos2::new(1., 0.), Pos2::new(0., 1.)))
+                                    .fit_to_exact_size(egui::Vec2::new(128., 128.)),
+                            );
+                            ui.add_space(max_rect.width() - 256. - 32.);
+                            ui.add(
+                                egui::Image::new(format!(
+                                    "file://assets/{}",
+                                    foes[0].texture_path()
+                                ))
+                                .fit_to_exact_size(egui::Vec2::new(128., 128.)),
+                            );
+                        });
+                        ui.horizontal_centered(|ui| {
+                            if ui.button("Attack").clicked() {
+                                // choose attack
+                            }
+                            if ui.button("Tame").clicked() {
+                                // try to tame
+                            }
+                        });
+                        ui.horizontal_centered(|ui| {
+                            if ui.button("Items").clicked() {}
+                            if ui.button("Flee").clicked() {
+                                next_state.set(AppState::InGame);
+                            }
+                        });
+                    });
+                });
         }
     });
 
@@ -131,11 +171,7 @@ pub fn setup_game_ui(
     if save {
         event_writer.write(NewSaveEvent {});
     }
-
-    // other fight buttons...
-    if flee {
-        next_state.set(AppState::InGame);
-    }
+    // other buttons
 
     Ok(())
 }
