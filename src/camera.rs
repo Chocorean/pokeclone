@@ -116,7 +116,6 @@ pub fn setup_world_camera(
     egui_user_textures.add_image(image_handle.clone());
 
     commands.spawn((
-        // PrimaryEguiContext,
         Camera2d,
         Camera {
             order: 0,
