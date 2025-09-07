@@ -31,8 +31,6 @@ pub fn setup_game_ui(
     team: Res<Team>,
     world_tex: Res<WorldTexture>,
     mut next_state: ResMut<NextState<AppState>>,
-    // asset_server: Res<AssetServer>,
-    // egui_textures: Res<EguiUserTextures>,
 ) -> Result {
     // textures
     let world_texture_id = contexts.image_id(&world_tex).unwrap();
@@ -49,7 +47,6 @@ pub fn setup_game_ui(
         .resizable(false)
         .min_width(200.0)
         .show(ctx, |ui| {
-            // ui.vertical(|ui| {
             ui.with_layout(egui::Layout::top_down(egui::Align::RIGHT), |ui| {
                 for member in team.0.iter() {
                     Frame::new()
@@ -120,6 +117,21 @@ pub fn setup_game_ui(
             ));
         });
         if *state == AppState::InFight {
+            // Show spinning prism on top of player
+            let rect = egui::Rect::from_min_size(
+                Pos2::new(
+                    max_rect.width() / 2. - 4.,
+                    max_rect.height() / 2. - 16.,
+                    // 400., 400.,
+                ),
+                bevy_egui::egui::Vec2::new(24., 24.),
+            );
+            ui.put(
+                rect,
+                egui::Image::new("file://assets/textures/animations/blue_prism.gif"),
+            );
+
+            // Fight floating window!
             let (title, foes) = if let Some(creature) = wild_creature {
                 (
                     format!("A wild {} wants to fight!", creature.name),
@@ -130,6 +142,7 @@ pub fn setup_game_ui(
                 (format!("A trainer wants to fight!"), vec![])
             };
             egui::Window::new(title)
+                .resizable(false)
                 .max_height(max_rect.height() * 0.5)
                 .show(ctx, |ui| {
                     ui.vertical(|ui| {
