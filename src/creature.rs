@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{fmt, path::Path};
 
 use bevy::{
     app::{App, Plugin},
@@ -64,12 +64,12 @@ impl Dex {
 
 #[derive(Clone)]
 pub struct Species {
-    name: String,
+    pub name: String,
     mass: f32,   // kg
     height: f32, // m
     attributes: Vec<Attribute>,
     stats: Stats,
-    individuals: Vec<Creature>,
+    pub individuals: Vec<Creature>,
 }
 
 impl Species {
@@ -181,6 +181,40 @@ impl Stats {
     }
 }
 
+impl IntoIterator for Stats {
+    type Item = (String, u8);
+
+    type IntoIter = StatsIntoIterator;
+
+    fn into_iter(self) -> Self::IntoIter {
+        StatsIntoIterator {
+            stats: self,
+            index: 0,
+        }
+    }
+}
+
+pub struct StatsIntoIterator {
+    stats: Stats,
+    index: usize,
+}
+
+impl Iterator for StatsIntoIterator {
+    type Item = (String, u8);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let result = match self.index {
+            0 => (String::from("HP"), self.stats.hp),
+            1 => (String::from("Attack"), self.stats.attack),
+            2 => (String::from("Defense"), self.stats.defense),
+            3 => (String::from("Speed"), self.stats.speed),
+            _ => return None,
+        };
+        self.index += 1;
+        Some(result)
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, Resource, Default)]
 pub struct Creature {
     pub name: String,
@@ -232,4 +266,15 @@ pub enum Element {
     Air,
     Earth,
     Water,
+}
+
+impl fmt::Display for Element {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(match self {
+            Self::Air => "Air",
+            Self::Fire => "Fire",
+            Self::Earth => "Earth",
+            Self::Water => "Water",
+        })
+    }
 }

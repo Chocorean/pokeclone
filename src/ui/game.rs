@@ -1,10 +1,17 @@
 use bevy::prelude::*;
 use bevy_egui::{
-    EguiContexts, EguiUserTextures,
+    EguiContexts,
     egui::{self, Color32, Frame, Pos2, Rect, RichText},
 };
 
-use crate::{AppState, camera::WorldTexture, creature::Creature, event::NewSaveEvent, team::Team};
+use crate::{
+    AppState,
+    camera::WorldTexture,
+    creature::{Creature, Dex},
+    event::NewSaveEvent,
+    team::Team,
+    ui::index::dex_list_ui,
+};
 
 #[derive(Component)]
 pub struct GameUI;
@@ -31,6 +38,8 @@ pub fn setup_game_ui(
     team: Res<Team>,
     world_tex: Res<WorldTexture>,
     mut next_state: ResMut<NextState<AppState>>,
+    dex: Res<Dex>,
+    mut enable_index: Local<bool>,
 ) -> Result {
     // textures
     let world_texture_id = contexts.image_id(&world_tex).unwrap();
@@ -101,6 +110,7 @@ pub fn setup_game_ui(
     egui::TopBottomPanel::top("actions_panel").show(ctx, |ui| {
         ui.horizontal_centered(|ui| {
             if *state == AppState::InGame {
+                ui.checkbox(&mut enable_index, "Index");
                 save = ui.button("Save").clicked();
             } else {
                 ui.disable();
@@ -181,6 +191,11 @@ pub fn setup_game_ui(
     });
 
     // buttons actions
+    egui::Window::new("Index")
+        .open(&mut enable_index)
+        .show(ctx, |ui| {
+            dex_list_ui(ui, &dex);
+        });
     if save {
         event_writer.write(NewSaveEvent {});
     }

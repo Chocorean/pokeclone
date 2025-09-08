@@ -1,7 +1,9 @@
 use bevy::prelude::*;
 
-pub mod game;
-pub mod main_menu;
+mod game;
+mod index;
+mod main_menu;
+
 use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};
 use game::*;
 use main_menu::*;
