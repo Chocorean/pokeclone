@@ -81,7 +81,7 @@ pub fn setup_game_ui(
                                 ui.add(
                                     egui::Image::new(format!(
                                         "file://assets/{}",
-                                        member.sprite(&dex)
+                                        member.texture_path(&dex)
                                     ))
                                     .fit_to_exact_size(egui::Vec2::new(64., 64.)),
                                 );
@@ -176,7 +176,7 @@ pub fn setup_game_ui(
                                     ui.add(
                                         egui::Image::new(format!(
                                             "file://assets/{}",
-                                            team.0[0].sprite(&dex)
+                                            team.0[0].texture_path(&dex)
                                         ))
                                         .uv(Rect::from_min_max(
                                             Pos2::new(1., 0.),

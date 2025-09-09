@@ -2,7 +2,9 @@
     "physical_attacks": [
         {
             "name": "Scratch",
-            "source": "Claws",
+            "source": [
+                "Claws"
+            ],
             "strong_against": [],
             "weak_against": [
                 "Wool"
@@ -12,5 +14,11 @@
             "target": "All"
         }
     ],
-    "magical_attacks": []
+    "magical_attacks": [
+        {
+            "name": "Lanceflamz",
+            "element": "fire",
+            "damage": 20
+        }
+    ]
 }

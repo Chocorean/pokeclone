@@ -121,7 +121,7 @@ impl Species {
 
 /// Physical attributes that a creature can have
 /// It determines physical attacks and damage multipliers
-#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Serialize, Deserialize)]
 pub enum Attribute {
     Ears,
     Tail,
@@ -245,16 +245,10 @@ impl Creature {
             .as_str()
             .expect("creature name should be a string")
             .to_string();
-        let element_str = value["element"]
+        let element = value["element"]
             .as_str()
-            .expect("creature element should be a string");
-        let element = match element_str {
-            "Fire" => Element::Fire,
-            "Air" => Element::Air,
-            "Earth" => Element::Earth,
-            "Water" => Element::Water,
-            x => panic!("Unknown element type {x}"),
-        };
+            .expect("creature element should be a string")
+            .into();
         Creature {
             name,
             stats: Creature::compute_stats(&element, species_stats),
@@ -303,6 +297,18 @@ pub enum Element {
     Air,
     Earth,
     Water,
+}
+
+impl From<&str> for Element {
+    fn from(value: &str) -> Self {
+        match value.to_ascii_lowercase().as_str() {
+            "fire" => Element::Fire,
+            "air" => Element::Air,
+            "earth" => Element::Earth,
+            "water" => Element::Water,
+            x => panic!("Unknown element type {x}"),
+        }
+    }
 }
 
 impl fmt::Display for Element {
