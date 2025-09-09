@@ -46,7 +46,6 @@ pub fn setup_main_camera(mut commands: Commands) {
     commands.spawn((
         Camera2d,
         Projection::Orthographic(OrthographicProjection {
-            scale: 0.5,
             scaling_mode: bevy::render::camera::ScalingMode::WindowSize,
             ..OrthographicProjection::default_2d()
         }),

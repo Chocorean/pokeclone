@@ -1,6 +1,6 @@
 use bevy_egui::egui::{self, Grid, RichText};
 
-use crate::creature::{Creature, Dex, Species};
+use crate::index::{Creature, Dex, Species};
 
 /// Basic brick for the Dex. It shows basic information about a creature.
 // todo: hover/click for more data.

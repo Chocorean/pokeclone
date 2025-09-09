@@ -21,43 +21,19 @@
       "individuals": [
         {
           "name": "Flammiaou",
-          "element": "Fire",
-          "stats": {
-            "hp": 123,
-            "attack": 91,
-            "defense": 83,
-            "speed": 98
-          }
+          "element": "Fire"
         },
         {
           "name": "Stratocat",
-          "element": "Air",
-          "stats": {
-            "hp": 117,
-            "attack": 99,
-            "defense": 77,
-            "speed": 103
-          }
+          "element": "Air"
         },
         {
           "name": "Matoulot",
-          "element": "Water",
-          "stats": {
-            "hp": 122,
-            "attack": 92,
-            "defense": 81,
-            "speed": 105
-          }
+          "element": "Water"
         },
         {
           "name": "Chaterre",
-          "element": "Earth",
-          "stats": {
-            "hp": 118,
-            "attack": 97,
-            "defense": 79,
-            "speed": 100
-          }
+          "element": "Earth"
         }
       ]
     },
@@ -82,43 +58,19 @@
       "individuals": [
         {
           "name": "Ratcendre",
-          "element": "Fire",
-          "stats": {
-            "hp": 78,
-            "attack": 72,
-            "defense": 63,
-            "speed": 107
-          }
+          "element": "Fire"
         },
         {
           "name": "Mulovol",
-          "element": "Air",
-          "stats": {
-            "hp": 83,
-            "attack": 68,
-            "defense": 61,
-            "speed": 114
-          }
+          "element": "Air"
         },
         {
           "name": "Hydrouris",
-          "element": "Water",
-          "stats": {
-            "hp": 81,
-            "attack": 69,
-            "defense": 59,
-            "speed": 112
-          }
+          "element": "Water"
         },
         {
           "name": "Sourilex",
-          "element": "Earth",
-          "stats": {
-            "hp": 79,
-            "attack": 71,
-            "defense": 58,
-            "speed": 109
-          }
+          "element": "Earth"
         }
       ]
     },
@@ -143,43 +95,19 @@
       "individuals": [
         {
           "name": "Hirondflamme",
-          "element": "Fire",
-          "stats": {
-            "hp": 72,
-            "attack": 88,
-            "defense": 52,
-            "speed": 133
-          }
+          "element": "Fire"
         },
         {
           "name": "Piafoudre",
-          "element": "Air",
-          "stats": {
-            "hp": 69,
-            "attack": 84,
-            "defense": 56,
-            "speed": 128
-          }
+          "element": "Air"
         },
         {
           "name": "Aqualet",
-          "element": "Water",
-          "stats": {
-            "hp": 71,
-            "attack": 86,
-            "defense": 54,
-            "speed": 131
-          }
+          "element": "Water"
         },
         {
           "name": "Rocange",
-          "element": "Earth",
-          "stats": {
-            "hp": 70,
-            "attack": 83,
-            "defense": 57,
-            "speed": 129
-          }
+          "element": "Earth"
         }
       ]
     }

@@ -7,8 +7,9 @@ use bevy_egui::{
 use crate::{
     AppState,
     camera::WorldTexture,
-    creature::{Creature, Dex},
     event::NewSaveEvent,
+    fight::FightState,
+    index::{Creature, Dex},
     team::Team,
     ui::index::dex_list_ui,
 };
@@ -38,6 +39,8 @@ pub fn setup_game_ui(
     team: Res<Team>,
     world_tex: Res<WorldTexture>,
     mut next_state: ResMut<NextState<AppState>>,
+    mut next_fight_state: ResMut<NextState<FightState>>,
+    fight_state: Res<State<FightState>>,
     dex: Res<Dex>,
     mut enable_index: Local<bool>,
 ) -> Result {
@@ -76,20 +79,31 @@ pub fn setup_game_ui(
                                 // ));
                                 // ui.add(image);
                                 ui.add(
-                                    egui::Image::new(format!("file://assets/{}", member.sprite()))
-                                        .fit_to_exact_size(egui::Vec2::new(64., 64.)),
+                                    egui::Image::new(format!(
+                                        "file://assets/{}",
+                                        member.sprite(&dex)
+                                    ))
+                                    .fit_to_exact_size(egui::Vec2::new(64., 64.)),
                                 );
                                 ui.vertical(|ui: &mut egui::Ui| {
-                                    ui.label(RichText::new(member.name()).color(Color32::WHITE));
+                                    ui.label(
+                                        RichText::new(member.name(&dex)).color(Color32::WHITE),
+                                    );
                                     let hp_bar = egui::ProgressBar::new(
-                                        member.hp as f32 / member.max_hp() as f32,
+                                        member.hp as f32 / member.max_hp(&dex) as f32,
                                     )
                                     .desired_height(8.)
                                     .fill(
-                                        if member.hp == member.max_hp() {
+                                        if member.hp
+                                            >= (member.max_hp(&dex) as f32 * 0.8).round() as u8
+                                        {
                                             Color32::GREEN
-                                        } else {
+                                        } else if member.hp
+                                            >= (member.max_hp(&dex) as f32 * 0.2).round() as u8
+                                        {
                                             Color32::ORANGE
+                                        } else {
+                                            Color32::RED
                                         },
                                     );
                                     ui.add(hp_bar);
@@ -97,7 +111,7 @@ pub fn setup_game_ui(
                                         egui::RichText::new(format!(
                                             "{}/{}",
                                             member.hp,
-                                            member.max_hp()
+                                            member.max_hp(&dex)
                                         ))
                                         .color(Color32::WHITE),
                                     )
@@ -155,37 +169,55 @@ pub fn setup_game_ui(
                 .resizable(false)
                 .max_height(max_rect.height() * 0.5)
                 .show(ctx, |ui| {
-                    ui.vertical(|ui| {
-                        ui.horizontal(|ui| {
-                            ui.add(
-                                egui::Image::new(format!("file://assets/{}", team.0[0].sprite()))
-                                    .uv(Rect::from_min_max(Pos2::new(1., 0.), Pos2::new(0., 1.)))
-                                    .fit_to_exact_size(egui::Vec2::new(128., 128.)),
-                            );
-                            ui.add_space(max_rect.width() - 256. - 32.);
-                            ui.add(
-                                egui::Image::new(format!(
-                                    "file://assets/{}",
-                                    foes[0].texture_path()
-                                ))
-                                .fit_to_exact_size(egui::Vec2::new(128., 128.)),
-                            );
-                        });
-                        ui.horizontal_centered(|ui| {
-                            if ui.button("Attack").clicked() {
-                                // choose attack
-                            }
-                            if ui.button("Tame").clicked() {
-                                // try to tame
-                            }
-                        });
-                        ui.horizontal_centered(|ui| {
-                            if ui.button("Items").clicked() {}
-                            if ui.button("Flee").clicked() {
-                                next_state.set(AppState::InGame);
-                            }
-                        });
-                    });
+                    match fight_state.get() {
+                        FightState::MainAction => {
+                            ui.vertical(|ui| {
+                                ui.horizontal(|ui| {
+                                    ui.add(
+                                        egui::Image::new(format!(
+                                            "file://assets/{}",
+                                            team.0[0].sprite(&dex)
+                                        ))
+                                        .uv(Rect::from_min_max(
+                                            Pos2::new(1., 0.),
+                                            Pos2::new(0., 1.),
+                                        ))
+                                        .fit_to_exact_size(egui::Vec2::new(128., 128.)),
+                                    );
+                                    ui.add_space(max_rect.width() - 256. - 32.);
+                                    ui.add(
+                                        egui::Image::new(format!(
+                                            "file://assets/{}",
+                                            foes[0].texture_path()
+                                        ))
+                                        .fit_to_exact_size(egui::Vec2::new(128., 128.)),
+                                    );
+                                });
+                                ui.horizontal_centered(|ui| {
+                                    if ui.button("Attack").clicked() {
+                                        next_fight_state.set(FightState::AttackChoice);
+                                    }
+                                    if ui.button("Tame").clicked() {
+                                        // try to tame
+                                    }
+                                });
+                                ui.horizontal_centered(|ui| {
+                                    if ui.button("Items").clicked() {}
+                                    if ui.button("Flee").clicked() {
+                                        next_state.set(AppState::InGame);
+                                    }
+                                });
+                            });
+                        }
+                        FightState::AttackChoice => {
+                            ui.horizontal_top(|ui| {
+                                egui::CollapsingHeader::new("Select an attack").show(ui, |ui| {
+                                    // one elemental attack, plus all attacks defined by physical caracteristics.
+                                });
+                            });
+                        }
+                        _ => {}
+                    };
                 });
         }
     });

@@ -29,21 +29,26 @@ impl Dex {
         // Not using std::fs for WASM compatibility
         let content = include_str!("../assets/creatures/gen1.json");
         let json: serde_json::Value = serde_json::from_str(content).unwrap();
-        let mut species = Vec::new();
+        let mut species_list: Vec<Species> = Vec::new();
         for sp in json["species"]
             .as_array()
             .expect("species should be an array")
         {
+            let mut species = Species::from_value(sp);
             let mut creatures = Vec::new();
             for cr in sp["individuals"]
                 .as_array()
                 .expect("individuals should be an array")
             {
-                creatures.push(Creature::from_value(cr));
+                creatures.push(Creature::from_value(cr, species_list.len(), &species.stats));
             }
-            species.push(Species::from_value(sp, creatures));
+            species.individuals = creatures;
+
+            species_list.push(species);
         }
-        Dex { species: species }
+        Dex {
+            species: species_list,
+        }
     }
 
     pub fn individuals(&self) -> Vec<Creature> {
@@ -60,9 +65,19 @@ impl Dex {
         let creature_idx = rng.random_range(0..individuals.len());
         individuals[creature_idx].clone()
     }
+
+    pub fn get_creature(&self, ids: (usize, usize)) -> &Creature {
+        self.species
+            .get(ids.0)
+            .unwrap()
+            .individuals
+            .get(ids.1)
+            .unwrap()
+    }
 }
 
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct Species {
     pub name: String,
     mass: f32,   // kg
@@ -73,7 +88,7 @@ pub struct Species {
 }
 
 impl Species {
-    pub fn from_value(value: &Value, individuals: Vec<Creature>) -> Self {
+    pub fn from_value(value: &Value) -> Self {
         let name = value["name"]
             .as_str()
             .expect("species name should be a string")
@@ -99,7 +114,7 @@ impl Species {
             height,
             attributes,
             stats,
-            individuals,
+            individuals: vec![],
         }
     }
 }
@@ -117,6 +132,7 @@ pub enum Attribute {
     Hair,
     Legs,
     Beak,
+    Claws,
 }
 
 impl Attribute {
@@ -135,6 +151,7 @@ impl Attribute {
             "hair" => Attribute::Hair,
             "legs" => Attribute::Legs,
             "beak" => Attribute::Beak,
+            "claws" => Attribute::Claws,
             x => panic!("Unknown attribute type {x}"),
         }
     }
@@ -147,18 +164,14 @@ pub struct Stats {
     pub attack: u8,
     pub defense: u8,
     pub speed: u8,
+    // common for all
+    /// this guy is a %
+    pub dodge: u8,
+    /// this guy is a %
+    pub accuracy: u8,
 }
 
 impl Stats {
-    // pub fn new(hp: u8, attack: u8, defense: u8, speed: u8) -> Self {
-    //     Stats {
-    //         hp,
-    //         attack,
-    //         defense,
-    //         speed,
-    //     }
-    // }
-
     pub fn from_value(value: &Value) -> Self {
         let hp = value["stats"]["hp"]
             .as_u64()
@@ -177,6 +190,9 @@ impl Stats {
             attack,
             defense,
             speed,
+            // default for all
+            dodge: 0,
+            accuracy: 100,
         }
     }
 }
@@ -218,13 +234,13 @@ impl Iterator for StatsIntoIterator {
 #[derive(Clone, Serialize, Deserialize, Resource, Default)]
 pub struct Creature {
     pub name: String,
-    // species: Species,
-    pub stats: Stats,
     pub element: Element,
+    pub species_id: usize,
+    pub stats: Stats,
 }
 
 impl Creature {
-    pub fn from_value(value: &Value) -> Self {
+    pub fn from_value(value: &Value, species_id: usize, species_stats: &Stats) -> Self {
         let name = value["name"]
             .as_str()
             .expect("creature name should be a string")
@@ -237,15 +253,13 @@ impl Creature {
             "Air" => Element::Air,
             "Earth" => Element::Earth,
             "Water" => Element::Water,
-            _ => panic!("Unknown element type"),
+            x => panic!("Unknown element type {x}"),
         };
-        // For simplicity, we use base stats as individual stats
-        // In a real game, you would have variations
-        let stats = Stats::from_value(value);
         Creature {
             name,
-            stats,
+            stats: Creature::compute_stats(&element, species_stats),
             element,
+            species_id,
         }
     }
 
@@ -256,6 +270,29 @@ impl Creature {
         } else {
             format!("textures/creatures/{}.png", self.name.to_lowercase())
         }
+    }
+
+    fn compute_stats(element: &Element, species_stats: &Stats) -> Stats {
+        let mut stats = species_stats.clone();
+        match element {
+            Element::Fire => {
+                stats.speed = (stats.speed as f32 * 1.05).round() as u8;
+                stats.speed = (stats.defense as f32 * 0.95).round() as u8;
+            }
+            Element::Water => {
+                stats.dodge += 5;
+                stats.attack = (stats.defense as f32 * 0.95).round() as u8;
+            }
+            Element::Air => {
+                stats.attack = (stats.speed as f32 * 1.05).round() as u8;
+                stats.accuracy -= 5;
+            }
+            Element::Earth => {
+                stats.defense = (stats.speed as f32 * 1.05).round() as u8;
+                stats.speed = (stats.defense as f32 * 0.95).round() as u8;
+            }
+        }
+        stats
     }
 }
 

@@ -2,8 +2,9 @@
 
 ## Issues
 
-- Despawn player entity properly when exiting the game
+- Despawn player entity properly when exiting the game (still relevant?)
 - Need another set of States when InGame: walk, animation, fight, etc, need to be thought out precisely
+- game crashes when starting a fight with an empty team. (which makes sense right now).
 
 ## TODO
 

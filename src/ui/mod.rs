@@ -15,6 +15,7 @@ pub struct UiPlugin;
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(EguiPlugin::default());
+        app.add_plugins(bevy_inspector_egui::DefaultInspectorConfigPlugin);
         app.add_systems(
             EguiPrimaryContextPass,
             (
@@ -26,6 +27,5 @@ impl Plugin for UiPlugin {
             EguiPrimaryContextPass,
             setup_game_ui.run_if(in_state(AppState::InFight)),
         );
-        // .add_systems(Update, fight_ui.run_if(in_state(AppState::InFight)))
     }
 }

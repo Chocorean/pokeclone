@@ -45,7 +45,6 @@ pub fn setup_main_menu_ui(
                 "https://github.com/chocorean/pokeclone/blob/main/",
                 "Direct link to source code."
             ));
-            egui::warn_if_debug_build(ui);
         });
 
         ui.separator();

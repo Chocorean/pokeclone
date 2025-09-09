@@ -6,7 +6,7 @@ Creatures can be inspired from anything. They are made from a `base` (animal, co
 
 ### Stats
 
-Each creature have base stats, defined by its `base`: it will be the main source of variation for stat. The list being:
+Each creature have base stats, defined by its `species`: it will be the main source of variation for stat. The list being:
 
 - hp
 - attack
@@ -41,7 +41,7 @@ Also strenghs and weaknesses:
 
 Depends on body parts and attributes. Have no accuracy (always hit), might be less efficient against other body parts (imagine kicklee trying to kick an ekans). Base 15% crit.
 
-- `kick`: 
+- `kick`:
 
 #### Body
 

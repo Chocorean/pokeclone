@@ -1,7 +1,7 @@
 use bevy::ecs::resource::Resource;
 use serde::{Deserialize, Serialize};
 
-use crate::creature::Creature;
+use crate::index::{Creature, Dex};
 
 #[derive(Resource, Serialize, Deserialize, Clone)]
 pub struct Team(pub Vec<TeamMember>);
@@ -14,20 +14,23 @@ impl Team {
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct TeamMember {
-    pub creature: Creature,
+    surname: Option<String>,
+    pub creature_id: (usize, usize),
     pub hp: u8,
 }
 
 impl TeamMember {
-    pub fn name(&self) -> &str {
-        &self.creature.name
+    pub fn name(&self, dex: &Dex) -> String {
+        self.surname
+            .clone()
+            .unwrap_or(dex.get_creature(self.creature_id).name.clone())
     }
 
-    pub fn sprite(&self) -> String {
-        self.creature.texture_path()
+    pub fn sprite(&self, dex: &Dex) -> String {
+        dex.get_creature(self.creature_id).texture_path()
     }
 
-    pub fn max_hp(&self) -> u8 {
-        self.creature.stats.hp
+    pub fn max_hp(&self, dex: &Dex) -> u8 {
+        dex.get_creature(self.creature_id).stats.hp
     }
 }

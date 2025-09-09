@@ -1,0 +1,16 @@
+{
+    "physical_attacks": [
+        {
+            "name": "Scratch",
+            "source": "Claws",
+            "strong_against": [],
+            "weak_against": [
+                "Wool"
+            ],
+            "damage": 20,
+            "effects": {},
+            "target": "All"
+        }
+    ],
+    "magical_attacks": []
+}

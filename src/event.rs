@@ -3,7 +3,7 @@ use bevy_ecs_ldtk::{GridCoords, LevelSelection};
 
 use crate::{
     AppState,
-    creature::{Creature, Dex},
+    index::{Creature, Dex},
     player::Player,
     save::Save,
     team::Team,

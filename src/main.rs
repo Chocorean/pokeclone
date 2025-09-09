@@ -1,7 +1,8 @@
 mod animation;
 mod camera;
-mod creature;
 mod event;
+mod fight;
+mod index;
 mod player;
 mod save;
 mod team;
@@ -11,15 +12,16 @@ mod world;
 use bevy::prelude::*;
 use bevy::state::state::States;
 use bevy::window::WindowResolution;
-use bevy_ecs_ldtk::prelude::*;
+use bevy_ecs_ldtk::LdtkPlugin;
+// use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use crate::animation::AnimationsPlugin;
-use crate::camera::*;
-use crate::creature::DexPlugin;
+use crate::camera::CamPlugin;
 use crate::event::EventsPlugin;
+use crate::fight::FightPlugin;
+use crate::index::DexPlugin;
 use crate::player::PlayerPlugin;
 use crate::ui::UiPlugin;
-
 use crate::world::WorldPlugin;
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]
@@ -46,7 +48,7 @@ fn main() {
                 .set(WindowPlugin {
                     primary_window: Some(Window {
                         title: "Pokeclone".to_string(),
-                        resizable: false,
+                        resizable: true,
                         resolution: WindowResolution::new(1000.0, 600.0),
                         ..default()
                     }),
@@ -62,6 +64,8 @@ fn main() {
             DexPlugin,
             PlayerPlugin,
             AnimationsPlugin,
+            FightPlugin,
+            // WorldInspectorPlugin::new(),
         ))
         .init_state::<AppState>()
         .run();
