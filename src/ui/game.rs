@@ -169,30 +169,27 @@ pub fn setup_game_ui(
                 .resizable(false)
                 .max_height(max_rect.height() * 0.5)
                 .show(ctx, |ui| {
-                    match fight_state.get() {
-                        FightState::MainAction => {
-                            ui.vertical(|ui| {
-                                ui.horizontal(|ui| {
-                                    ui.add(
-                                        egui::Image::new(format!(
-                                            "file://assets/{}",
-                                            team.0[0].texture_path(&dex)
-                                        ))
-                                        .uv(Rect::from_min_max(
-                                            Pos2::new(1., 0.),
-                                            Pos2::new(0., 1.),
-                                        ))
-                                        .fit_to_exact_size(egui::Vec2::new(128., 128.)),
-                                    );
-                                    ui.add_space(max_rect.width() - 256. - 32.);
-                                    ui.add(
-                                        egui::Image::new(format!(
-                                            "file://assets/{}",
-                                            foes[0].texture_path()
-                                        ))
-                                        .fit_to_exact_size(egui::Vec2::new(128., 128.)),
-                                    );
-                                });
+                    ui.vertical(|ui| {
+                        ui.horizontal(|ui| {
+                            ui.add(
+                                egui::Image::new(format!(
+                                    "file://assets/{}",
+                                    team.0[0].texture_path(&dex)
+                                ))
+                                .uv(Rect::from_min_max(Pos2::new(1., 0.), Pos2::new(0., 1.)))
+                                .fit_to_exact_size(egui::Vec2::new(128., 128.)),
+                            );
+                            ui.add_space(max_rect.width() - 256. - 32.);
+                            ui.add(
+                                egui::Image::new(format!(
+                                    "file://assets/{}",
+                                    foes[0].texture_path()
+                                ))
+                                .fit_to_exact_size(egui::Vec2::new(128., 128.)),
+                            );
+                        });
+                        match fight_state.get() {
+                            FightState::MainAction => {
                                 ui.horizontal_centered(|ui| {
                                     if ui.button("Attack").clicked() {
                                         next_fight_state.set(FightState::AttackChoice);
@@ -207,17 +204,26 @@ pub fn setup_game_ui(
                                         next_state.set(AppState::InGame);
                                     }
                                 });
-                            });
-                        }
-                        FightState::AttackChoice => {
-                            ui.horizontal_top(|ui| {
-                                egui::CollapsingHeader::new("Select an attack").show(ui, |ui| {
-                                    // one elemental attack, plus all attacks defined by physical caracteristics.
+                            }
+                            FightState::AttackChoice => {
+                                ui.horizontal_top(|ui| {
+                                    egui::CollapsingHeader::new("Select an attack").show(
+                                        ui,
+                                        |ui| {
+                                            // one elemental attack, plus all attacks defined by physical caracteristics.
+                                            let fighter = team.0.first().unwrap();
+                                            for attack in
+                                                dex.filter_attacks_for_team_member(fighter.clone())
+                                            {
+                                                ui.button(attack.name());
+                                            }
+                                        },
+                                    );
                                 });
-                            });
-                        }
-                        _ => {}
-                    };
+                            }
+                            _ => {}
+                        };
+                    });
                 });
         }
     });

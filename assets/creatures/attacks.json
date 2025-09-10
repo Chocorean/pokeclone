@@ -1,0 +1,68 @@
+{
+    "physical_attacks": [
+        {
+            "name": "Scratch",
+            "source": [
+                "Claws"
+            ],
+            "strong_against": [],
+            "weak_against": [
+                "Wool"
+            ],
+            "damage": 20,
+            "target": "All"
+        },
+        {
+            "name": "Listen",
+            "source": [
+                "Ears"
+            ],
+            "target": "OneSelf"
+        },
+        {
+            "name": "Kick",
+            "source": [
+                "Legs"
+            ],
+            "damage": 20,
+            "target": "AllButSelf"
+        },
+        {
+            "name": "Charge",
+            "source": [
+                "Legs"
+            ],
+            "target": "OneSelf"
+        },
+        {
+            "name": "Clean",
+            "source": [
+                "Tongue"
+            ],
+            "damage": 20,
+            "target": "Ally"
+        }
+    ],
+    "magical_attacks": [
+        {
+            "name": "Lancebraiz",
+            "element": "fire",
+            "damage": 20
+        },
+        {
+            "name": "Lancemouss",
+            "element": "water",
+            "damage": 20
+        },
+        {
+            "name": "Lancegaz",
+            "element": "air",
+            "damage": 20
+        },
+        {
+            "name": "Lancemikey",
+            "element": "earth",
+            "damage": 20
+        }
+    ]
+}

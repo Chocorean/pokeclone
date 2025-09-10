@@ -38,4 +38,8 @@ impl TeamMember {
     }
 
     // todo base stat + actual stats (from combat)
+
+    pub fn to_creature(&self, dex: &Dex) -> Creature {
+        dex.get_creature(self.creature_id).clone()
+    }
 }
