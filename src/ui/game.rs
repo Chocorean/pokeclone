@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use bevy::prelude::*;
 use bevy_egui::{
     EguiContexts,
@@ -9,7 +11,7 @@ use crate::{
     camera::WorldTexture,
     event::NewSaveEvent,
     fight::FightState,
-    index::{Creature, Dex},
+    index::{Attack, Creature, Dex},
     team::Team,
     ui::index::dex_list_ui,
 };
@@ -34,7 +36,7 @@ pub struct SaveButton;
 pub fn setup_game_ui(
     mut contexts: EguiContexts,
     mut event_writer: EventWriter<NewSaveEvent>,
-    wild_creature: Option<Res<Creature>>,
+    wild_creature: Option<ResMut<Creature>>,
     state: Res<State<AppState>>,
     team: Res<Team>,
     world_tex: Res<WorldTexture>,
@@ -43,6 +45,8 @@ pub fn setup_game_ui(
     fight_state: Res<State<FightState>>,
     dex: Res<Dex>,
     mut enable_index: Local<bool>,
+    // let mut attack_choice: Option<Arc<dyn Attack + Send + Sync>> = None;
+    mut attack_choice: Local<Option<Arc<dyn Attack + Send + Sync>>>,
 ) -> Result {
     // textures
     let world_texture_id = contexts.image_id(&world_tex).unwrap();
@@ -156,15 +160,19 @@ pub fn setup_game_ui(
             );
 
             // Fight floating window!
-            let (title, foes) = if let Some(creature) = wild_creature {
+            let (title, mut foes) = if let Some(creature) = wild_creature {
                 (
                     format!("A wild {} wants to fight!", creature.name),
-                    vec![creature.clone()],
+                    vec![creature],
                 )
             } else {
                 todo!("need to implment fight versus trainer");
                 (format!("A trainer wants to fight!"), vec![])
             };
+
+            // Actions variable
+            // let mut attack_choice: Option<Arc<dyn Attack + Send + Sync>> = None;
+
             egui::Window::new(title)
                 .resizable(false)
                 .max_height(max_rect.height() * 0.5)
@@ -215,13 +223,45 @@ pub fn setup_game_ui(
                                             for attack in
                                                 dex.filter_attacks_for_team_member(fighter.clone())
                                             {
-                                                ui.button(attack.name());
+                                                if ui.button(attack.name()).clicked() {
+                                                    *attack_choice = Some(Arc::clone(&attack));
+                                                    next_fight_state.set(FightState::TargetChoice);
+                                                };
                                             }
                                         },
                                     );
                                 });
                             }
-                            _ => {}
+                            FightState::TargetChoice => {
+                                // todo: faire pour de vraiplutot que ce hack
+                                if foes.len() == 1 {
+                                    next_fight_state.set(FightState::Action);
+                                } else {
+                                    todo!("pas encore implemente les cbt dresseurs");
+                                }
+                            }
+                            FightState::Action => {
+                                if let Some(attack) = attack_choice.clone() {
+                                    println!("on attack avec {}", attack.name());
+                                    println!(
+                                        "ca fait {} degats bruts",
+                                        attack.damage().unwrap_or(0)
+                                    );
+                                    // TODO ICI
+                                    // Ok la ca ne va pas, ca doit etre des teammebers aussi en face
+                                    let foe = foes.get_mut(0).unwrap();
+                                    // reset action
+                                    *attack_choice = None;
+                                    next_fight_state.set(FightState::EnemyTurn);
+                                } else {
+                                    todo!("action other than attack not implemented !");
+                                }
+                            }
+                            _ => {
+                                // while not implemented, fall back to main
+                                println!("{fight_state:?} not implemented !");
+                                next_fight_state.set(FightState::MainAction)
+                            }
                         };
                     });
                 });

@@ -401,6 +401,7 @@ pub trait Attack {
     fn name(&self) -> String;
     fn attributes(&self) -> Vec<Attribute>;
     fn element(&self) -> Option<Element>;
+    fn damage(&self) -> Option<u8>;
 }
 
 impl Attack for PhysicalAttack {
@@ -415,6 +416,10 @@ impl Attack for PhysicalAttack {
     fn element(&self) -> Option<Element> {
         None
     }
+
+    fn damage(&self) -> Option<u8> {
+        self.damage
+    }
 }
 
 impl Attack for MagicalAttack {
@@ -428,6 +433,10 @@ impl Attack for MagicalAttack {
 
     fn element(&self) -> Option<Element> {
         Some(self.element)
+    }
+
+    fn damage(&self) -> Option<u8> {
+        self.damage
     }
 }
 
@@ -459,7 +468,6 @@ impl Attacks {
             .iter()
             .filter(|atk| {
                 if let Some(elt) = atk.element() {
-                    dbg!(elt, element, elt == element);
                     elt == element
                 } else {
                     false

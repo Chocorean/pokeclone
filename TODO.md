@@ -8,6 +8,7 @@
 
 ## TODO
 
+- [Code] Associate attacks with creatures on creation, not dynamically during fights.
 - [Code] Fight (big)
 - [Art] Animate all creatures sprites
 - [Code/Bug] Cannot change level since neighbors not loaded yet
@@ -30,3 +31,4 @@
 - [Code/LDTK] Animate player
 - [Code] Player directions
 - [Code] WASM compatibility!
+- [Code] Refactor attacks and all into the Dex

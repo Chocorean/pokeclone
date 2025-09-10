@@ -1,7 +1,7 @@
 use bevy::ecs::resource::Resource;
 use serde::{Deserialize, Serialize};
 
-use crate::index::{Creature, Dex};
+use crate::index::Dex;
 
 #[derive(Resource, Serialize, Deserialize, Clone)]
 pub struct Team(pub Vec<TeamMember>);
@@ -38,8 +38,4 @@ impl TeamMember {
     }
 
     // todo base stat + actual stats (from combat)
-
-    pub fn to_creature(&self, dex: &Dex) -> Creature {
-        dex.get_creature(self.creature_id).clone()
-    }
 }

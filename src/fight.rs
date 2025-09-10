@@ -22,6 +22,10 @@ pub enum FightState {
     TargetChoice,
     /// Player chooses which creature they will send to replace the current one
     SwitchChoice,
+    /// The selected action happens
+    Action,
+    /// Enemy turn
+    EnemyTurn,
     /// Give XP or level up or shit
     Win,
     /// Send back to last bed or smth.
