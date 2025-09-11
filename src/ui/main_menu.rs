@@ -1,7 +1,10 @@
 use bevy::prelude::*;
 use bevy_egui::{
     EguiContexts,
-    egui::{self, Color32},
+    egui::{
+        self, Color32, FontData, FontTweak,
+        epaint::text::{FontInsert, InsertFontFamily},
+    },
 };
 
 use crate::{AppState, save::Save};

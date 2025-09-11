@@ -13,7 +13,7 @@ use crate::{
     fight::FightState,
     index::{Attack, Creature, Dex},
     team::Team,
-    ui::index::dex_list_ui,
+    ui::{index::dex_list_ui, widgets::MenuButton},
 };
 
 #[derive(Component)]
@@ -125,16 +125,19 @@ pub fn setup_game_ui(
                 }
             });
         });
-    egui::TopBottomPanel::top("actions_panel").show(ctx, |ui| {
-        ui.horizontal_centered(|ui| {
-            if *state == AppState::InGame {
-                ui.checkbox(&mut enable_index, "Index");
-                save = ui.button("Save").clicked();
-            } else {
-                ui.disable();
-            }
+    egui::TopBottomPanel::top("actions_panel")
+        .frame(egui::Frame::default().inner_margin(10.0))
+        .show(ctx, |ui| {
+            ui.horizontal_centered(|ui| {
+                if *state == AppState::InGame {
+                    ui.checkbox(&mut enable_index, "Index");
+                    // save = ui.button("Save").clicked();
+                    save = ui.add(MenuButton::new("Save")).clicked();
+                } else {
+                    ui.disable();
+                }
+            });
         });
-    });
 
     egui::CentralPanel::default().show(ctx, |ui| {
         let max_rect = ui.max_rect();
