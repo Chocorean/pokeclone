@@ -41,7 +41,6 @@ impl Plugin for WorldPlugin {
                     cache_herb_locations,
                     cache_goal_locations,
                     cache_wall_locations,
-                    translate_grid_coords_entities,
                     handle_player_interaction,
                     handle_through_goal,
                     move_player_from_input,
@@ -51,7 +50,8 @@ impl Plugin for WorldPlugin {
             // Some systems still run in `AppState::InFight` state
             .add_systems(
                 Update,
-                translate_grid_coords_entities.run_if(in_state(AppState::InFight)),
+                translate_grid_coords_entities
+                    .run_if(in_state(AppState::InFight).or(in_state(AppState::InGame))),
             )
             .add_systems(
                 // When we leave the game
