@@ -179,14 +179,36 @@ pub fn setup_game_ui(
                 .show(ctx, |ui| {
                     ui.vertical(|ui| {
                         ui.horizontal(|ui| {
-                            ui.add(
-                                egui::Image::new(format!(
-                                    "file://assets/{}",
-                                    team.0[0].texture_path(&dex)
-                                ))
-                                .uv(Rect::from_min_max(Pos2::new(1., 0.), Pos2::new(0., 1.)))
-                                .fit_to_exact_size(egui::Vec2::new(128., 128.)),
-                            );
+                            ui.vertical(|ui| {
+                                ui.add(
+                                    egui::Image::new(format!(
+                                        "file://assets/{}",
+                                        team.0[0].texture_path(&dex)
+                                    ))
+                                    .uv(Rect::from_min_max(Pos2::new(1., 0.), Pos2::new(0., 1.)))
+                                    .fit_to_exact_size(egui::Vec2::new(128., 128.)),
+                                );
+                                let hp_bar = egui::ProgressBar::new(
+                                    team.0[0].hp as f32 / team.0[0].max_hp(&dex) as f32,
+                                )
+                                // todo rendre ca dynamique?
+                                .desired_height(8.)
+                                .desired_width(100.)
+                                .fill(
+                                    if team.0[0].hp
+                                        >= (team.0[0].max_hp(&dex) as f32 * 0.8).round() as u8
+                                    {
+                                        Color32::GREEN
+                                    } else if team.0[0].hp
+                                        >= (team.0[0].max_hp(&dex) as f32 * 0.2).round() as u8
+                                    {
+                                        Color32::ORANGE
+                                    } else {
+                                        Color32::RED
+                                    },
+                                );
+                                ui.add(hp_bar);
+                            });
                             ui.add_space(max_rect.width() - 256. - 32.);
                             ui.add(
                                 egui::Image::new(format!(
@@ -215,21 +237,16 @@ pub fn setup_game_ui(
                             }
                             FightState::AttackChoice => {
                                 ui.horizontal_top(|ui| {
-                                    egui::CollapsingHeader::new("Select an attack").show(
-                                        ui,
-                                        |ui| {
-                                            // one elemental attack, plus all attacks defined by physical caracteristics.
-                                            let fighter = team.0.first().unwrap();
-                                            for attack in
-                                                dex.filter_attacks_for_team_member(fighter.clone())
-                                            {
-                                                if ui.button(attack.name()).clicked() {
-                                                    *attack_choice = Some(Arc::clone(&attack));
-                                                    next_fight_state.set(FightState::TargetChoice);
-                                                };
-                                            }
-                                        },
-                                    );
+                                    // one elemental attack, plus all attacks defined by physical caracteristics.
+                                    let fighter = team.0.first().unwrap();
+                                    for attack in
+                                        dex.filter_attacks_for_team_member(fighter.clone())
+                                    {
+                                        if ui.button(attack.name()).clicked() {
+                                            *attack_choice = Some(Arc::clone(&attack));
+                                            next_fight_state.set(FightState::TargetChoice);
+                                        };
+                                    }
                                 });
                             }
                             FightState::TargetChoice => {
