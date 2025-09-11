@@ -3,6 +3,7 @@ use bevy::{
     render::{
         camera::{ImageRenderTarget, RenderTarget},
         render_resource::{Extent3d, TextureDescriptor, TextureDimension},
+        view::RenderLayers,
     },
 };
 use bevy_ecs_ldtk::{GridCoords, LdtkWorldBundle, LevelSelection};
@@ -50,6 +51,7 @@ pub fn setup_main_camera(mut commands: Commands) {
             ..OrthographicProjection::default_2d()
         }),
         MainCamera,
+        RenderLayers::layer(1), // prevent it from seeing the ldtk workd
     ));
 }
 
