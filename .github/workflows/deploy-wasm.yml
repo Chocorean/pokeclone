@@ -68,7 +68,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: pokeclone-wasm
-        path: target/wasm32-unknown-unknown/release
+        path: out
         if-no-files-found: error
 
   deploy:
