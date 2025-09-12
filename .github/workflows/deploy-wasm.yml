@@ -32,10 +32,10 @@ jobs:
 
     - uses: Swatinem/rust-cache@v2
 
-    - name: Install wasm-pack
+    # - name: Install wasm-pack
       # Use workspace target directory for cargo install's build,
       # so that the build of wasm-pack will be cached by rust-cache action.
-      run: CARGO_TARGET_DIR=`pwd`/target cargo install wasm-pack
+      # run: CARGO_TARGET_DIR=`pwd`/target cargo install wasm-pack
 
     # - name: NPM install (latest)
     #   run: cd tx2-web && npm install npm@latest
@@ -49,8 +49,19 @@ jobs:
     # - name: eslint
     #   run: cd tx2-web && npm run lint
 
+    - name: Install wasm-bindgen-cli
+      run: cargo install wasm-bindgen-cli
+
     - name: Build WASM file
       run: cargo build --release --target wasm32-unknown-unknown
+
+    - name: Build Js loader
+      run: wasm-bindgen --target web --out-dir ./out ./target/wasm32-unknown-unknown/debug/pokeclone.wasm --no-typescript
+
+    - name: Move a few assets around before upload
+      run: |
+        mv assets out/assets
+        mv out/assets/wasm/index.html out/index.html
 
     # Save wasm build so that we can optionally deploy it without rebuilding
     - name: Save wasm dist artifact
