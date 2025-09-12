@@ -56,8 +56,8 @@ jobs:
     - name: Save wasm dist artifact
       uses: actions/upload-artifact@v4
       with:
-        name: chocorean-web-dist
-        path: chocorean-web/dist
+        name: pokeclone-dist
+        path: pokeclone/dist
         if-no-files-found: error
 
   deploy:
@@ -72,14 +72,15 @@ jobs:
     #
     # Caution: GitHub's parsing is weird around multiline expressions so just don't.
     # https://github.community/t/how-to-write-multi-line-condition-in-if/128477
-    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/pages-alt') }}
+    # if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/pages-alt') }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 
     steps:
 
     - name: Download wasm dist artifact
       uses: actions/download-artifact@v4
       with:
-        name: chocorean-web-dist
+        name: pokeclone-dist
         path: dist-for-deploy
 
     - name: Deploy to GitHub Pages
@@ -99,4 +100,4 @@ jobs:
         keep_history: false
         jekyll: false
       env:
-        GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB_DEMO }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
