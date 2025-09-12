@@ -1,7 +1,7 @@
 name: WASM Build, Test, Deploy
 
 # Largely taken from
-https://github.com/TX-2/TX-2-simulator/blob/main/.github/workflows/deploy-wasm.yml
+# https://github.com/TX-2/TX-2-simulator/blob/main/.github/workflows/deploy-wasm.yml
 
 permissions: {}
 
