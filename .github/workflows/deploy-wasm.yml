@@ -21,6 +21,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install libasound2
+      run: sudo apt install -y libasound2-dev
+
+
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
