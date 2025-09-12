@@ -50,7 +50,7 @@ jobs:
     #   run: cd tx2-web && npm run lint
 
     - name: Build WASM file
-      run: cargo build --release
+      run: cargo build --release --target wasm32-unknown-unknown
 
     # Save wasm build so that we can optionally deploy it without rebuilding
     - name: Save wasm dist artifact
