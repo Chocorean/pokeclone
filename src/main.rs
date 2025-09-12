@@ -13,7 +13,6 @@ use bevy::prelude::*;
 use bevy::state::state::States;
 use bevy::window::WindowResolution;
 use bevy_ecs_ldtk::LdtkPlugin;
-// use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use crate::animation::AnimationsPlugin;
 use crate::camera::CamPlugin;
@@ -41,32 +40,36 @@ pub enum AppState {
 }
 
 fn main() {
-    App::new()
-        .add_plugins(
-            DefaultPlugins
-                .set(ImagePlugin::default_nearest())
-                .set(WindowPlugin {
-                    primary_window: Some(Window {
-                        title: "Pokeclone".to_string(),
-                        resizable: true,
-                        resolution: WindowResolution::new(1000.0, 600.0),
-                        ..default()
-                    }),
+    let mut app = App::new();
+    app.add_plugins(
+        DefaultPlugins
+            .set(ImagePlugin::default_nearest())
+            .set(WindowPlugin {
+                primary_window: Some(Window {
+                    title: "Pokeclone".to_string(),
+                    resizable: true,
+                    resolution: WindowResolution::new(1000.0, 600.0),
                     ..default()
                 }),
-        )
-        .add_plugins((
-            LdtkPlugin,
-            EventsPlugin,
-            WorldPlugin,
-            UiPlugin,
-            CamPlugin,
-            DexPlugin,
-            PlayerPlugin,
-            AnimationsPlugin,
-            FightPlugin,
-            // WorldInspectorPlugin::new(),
-        ))
-        .init_state::<AppState>()
-        .run();
+                ..default()
+            }),
+    );
+    app.add_plugins((
+        LdtkPlugin,
+        EventsPlugin,
+        WorldPlugin,
+        UiPlugin,
+        CamPlugin,
+        DexPlugin,
+        PlayerPlugin,
+        AnimationsPlugin,
+        FightPlugin,
+    ));
+    app.init_state::<AppState>();
+
+    if cfg!(debug_assertions) {
+        app.add_plugins(bevy_inspector_egui::quick::WorldInspectorPlugin::new());
+    }
+
+    app.run();
 }
