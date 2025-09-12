@@ -56,7 +56,7 @@ jobs:
       run: cargo build --release --target wasm32-unknown-unknown
 
     - name: Build Js loader
-      run: wasm-bindgen --target web --out-dir ./out ./target/wasm32-unknown-unknown/debug/pokeclone.wasm --no-typescript
+      run: wasm-bindgen --target web --out-dir ./out ./target/wasm32-unknown-unknown/release/pokeclone.wasm --no-typescript
 
     - name: Move a few assets around before upload
       run: |
