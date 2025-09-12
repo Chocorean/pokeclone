@@ -95,9 +95,9 @@ jobs:
       uses: crazy-max/ghaction-github-pages@df5cc2bfa78282ded844b354faee141f06b41865
       with:
         repo: chocorean/pokeclone-demo
-        target_branch: main
+        target_branch: pages
         build_dir: dist-for-deploy
         keep_history: false
         jekyll: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_POKECLONE_DEMO_TOKEN }}
