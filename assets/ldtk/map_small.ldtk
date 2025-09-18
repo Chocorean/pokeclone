@@ -1096,7 +1096,7 @@
 		{
 			"__cWid": 8,
 			"__cHei": 38,
-			"identifier": "Tileset",
+			"identifier": "World_small",
 			"uid": 2,
 			"relPath": "../textures/world_small.png",
 			"embedAtlas": null,
@@ -1117,13 +1117,13 @@
 		},
 		{
 			"__cWid": 3,
-			"__cHei": 4,
+			"__cHei": 5,
 			"identifier": "Player",
 			"uid": 24,
 			"relPath": "../textures/player.png",
 			"embedAtlas": null,
 			"pxWid": 42,
-			"pxHei": 63,
+			"pxHei": 84,
 			"tileGridSize": 16,
 			"spacing": 1,
 			"padding": 0,
@@ -1132,7 +1132,7 @@
 			"enumTags": [],
 			"customData": [],
 			"savedSelections": [],
-			"cachedPixelData": { "opaqueTiles": "001001001111", "averageColors": "aa98ba980000aa99aaaa0000a888a8980000000000000000" }
+			"cachedPixelData": { "opaqueTiles": "001001001001001", "averageColors": "aa98ba980000aa99aaaa0000a888a89800008876986600009876b8760000" }
 		},
 		{
 			"__cWid": 3,

@@ -1,8 +1,13 @@
 use std::{fmt, path::Path, sync::Arc};
 
 use bevy::{
-    app::{App, Plugin},
-    ecs::resource::Resource,
+    app::{App, Plugin, PreStartup},
+    asset::{AssetServer, Handle},
+    ecs::{
+        resource::Resource,
+        system::{Commands, ResMut},
+    },
+    image::Image,
 };
 use rand::Rng;
 use serde::{Deserialize, Serialize};
@@ -17,9 +22,14 @@ pub struct DexPlugin;
 
 impl Plugin for DexPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(Dex::new());
+        app.add_systems(PreStartup, init_index);
+        // app.insert_resource(Dex::new());
         app.init_resource::<Creature>(); // wild encounter // todo to move else where or remove
     }
+}
+
+fn init_index(mut commands: Commands, asset_server: ResMut<AssetServer>) {
+    commands.insert_resource(Dex::new(asset_server));
 }
 
 /// There are 4 elements in the game. They have circular stregths/weaknesses, and slithgly
@@ -522,7 +532,7 @@ pub struct Dex {
 }
 
 impl Dex {
-    pub fn new() -> Self {
+    pub fn new(asset_server: ResMut<AssetServer>) -> Self {
         // loading creatures
         let content = include_str!("../assets/creatures/gen1.json");
         let json: serde_json::Value = serde_json::from_str(content).unwrap();
@@ -537,7 +547,9 @@ impl Dex {
                 .as_array()
                 .expect("individuals should be an array")
             {
-                creatures.push(Creature::from_value(cr, species_list.len(), &species.stats));
+                let creature = Creature::from_value(cr, species_list.len(), &species.stats);
+                let _: Handle<Image> = asset_server.load(creature.texture_path());
+                creatures.push(creature);
             }
             species.individuals = creatures;
 

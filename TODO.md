@@ -8,11 +8,14 @@
 
 ## TODO
 
+- [Code] Too Much Logic in UI Widgets
+- [Code] Style Ui widgets.
 - [Code] Associate attacks with creatures on creation, not dynamically during fights.
 - [Code] Fight (big)
 - [Art] Animate all creatures sprites
 - [Code/Bug] Cannot change level since neighbors not loaded yet
 - [LDTK] Update layers zindex so the player shows correctly
+- [Code] Leaving and re-entering the game messes up the sprite of the player.
 
 ### Rewrite the player entity
 
