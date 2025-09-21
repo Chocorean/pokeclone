@@ -1,8 +1,8 @@
 mod animation;
 mod camera;
+mod dex;
 mod event;
 mod fight;
-mod index;
 mod player;
 mod save;
 mod team;
@@ -12,13 +12,14 @@ mod world;
 use bevy::prelude::*;
 use bevy::state::state::States;
 use bevy::window::WindowResolution;
+use bevy_easy_gif::prelude::GifPlugin;
 use bevy_ecs_ldtk::LdtkPlugin;
 
 use crate::animation::AnimationsPlugin;
 use crate::camera::CamPlugin;
+use crate::dex::DexPlugin;
 use crate::event::EventsPlugin;
 use crate::fight::FightPlugin;
-use crate::index::DexPlugin;
 use crate::player::PlayerPlugin;
 use crate::ui::UiPlugin;
 use crate::world::WorldPlugin;
@@ -56,6 +57,7 @@ fn main() {
     );
     app.add_plugins((
         LdtkPlugin,
+        GifPlugin,
         EventsPlugin,
         WorldPlugin,
         UiPlugin,

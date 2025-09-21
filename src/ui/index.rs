@@ -1,6 +1,6 @@
 use bevy_egui::egui::{self, Grid, RichText};
 
-use crate::index::{Creature, Dex, Species};
+use crate::dex::{Creature, Dex, Species};
 
 /// Basic brick for the Dex. It shows basic information about a creature.
 // todo: hover/click for more data.
@@ -8,7 +8,7 @@ fn creature_entry_ui(ui: &mut egui::Ui, creature: &Creature) -> egui::Response {
     ui.horizontal_top(|ui| {
         // Draw image, name, etc.
         ui.add(
-            egui::Image::new(format!("file://assets/{}", creature.texture_path()))
+            egui::Image::new(format!("file://{}", creature.texture_path()))
                 .fit_to_exact_size(egui::Vec2::new(64., 64.)),
         );
         ui.label(format!("{} ({})", creature.name, creature.element));
@@ -31,7 +31,7 @@ fn species_dropdown_ui(ui: &mut egui::Ui, species: &Species) -> egui::Response {
     ui.vertical(|ui| {
         egui::CollapsingHeader::new(&species.name).show(ui, |ui| {
             for creature in &species.individuals {
-                creature_entry_ui(ui, creature);
+                creature_entry_ui(ui, &creature.0);
                 ui.separator();
             }
         })

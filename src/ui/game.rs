@@ -9,27 +9,12 @@ use bevy_egui::{
 use crate::{
     AppState,
     camera::WorldTexture,
+    dex::{Attack, Creature, Dex},
     event::NewSaveEvent,
     fight::FightState,
-    index::{Attack, Creature, Dex},
     team::Team,
     ui::{index::dex_list_ui, widgets::MenuButton},
 };
-
-#[derive(Component)]
-pub struct GameUI;
-
-#[derive(Component)]
-pub struct TeamUI;
-
-#[derive(Component)]
-pub struct WorldUI;
-
-#[derive(Component)]
-pub struct GameNode;
-
-#[derive(Component)]
-pub struct SaveButton;
 
 /// Build the whole game UI
 /// What it shows depends on the current `AppState`
@@ -214,11 +199,8 @@ pub fn setup_game_ui(
                             });
                             ui.add_space(max_rect.width() - 256. - 32.);
                             ui.add(
-                                egui::Image::new(format!(
-                                    "file://assets/{}",
-                                    foes[0].texture_path()
-                                ))
-                                .fit_to_exact_size(egui::Vec2::new(128., 128.)),
+                                egui::Image::new(format!("file://{}", foes[0].texture_path()))
+                                    .fit_to_exact_size(egui::Vec2::new(128., 128.)),
                             );
                         });
                         match fight_state.get() {

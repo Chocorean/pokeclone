@@ -78,8 +78,8 @@ pub fn setup_world_camera(
     commands.spawn((
         WorldBundle,
         LdtkWorldBundle {
-            ldtk_handle: asset_server.load("ldtk/mymap.ldtk").into(),
-            // ldtk_handle: asset_server.load("ldtk/map_small.ldtk").into(),
+            // ldtk_handle: asset_server.load("ldtk/mymap.ldtk").into(),
+            ldtk_handle: asset_server.load("ldtk/map_small.ldtk").into(),
             ..Default::default()
         },
         // AudioPlayer::new(asset_server.load("sfx/town.flac")),

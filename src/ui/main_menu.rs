@@ -1,25 +1,10 @@
 use bevy::prelude::*;
 use bevy_egui::{
     EguiContexts,
-    egui::{
-        self, Color32, FontData, FontTweak,
-        epaint::text::{FontInsert, InsertFontFamily},
-    },
+    egui::{self, Color32},
 };
 
 use crate::{AppState, save::Save};
-
-#[derive(Component)]
-pub struct ContinueButton;
-
-#[derive(Component)]
-pub struct NewGameButton;
-
-#[derive(Component)]
-pub struct OptionsButton;
-
-#[derive(Component)]
-pub struct MainMenuUI;
 
 /// Build the "main menu" window, with a few buttons: Continue (if save exists), New Game, and Options.
 pub fn setup_main_menu_ui(

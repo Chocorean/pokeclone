@@ -3,7 +3,7 @@ use bevy_ecs_ldtk::{GridCoords, LevelSelection};
 
 use crate::{
     AppState,
-    index::{Creature, Dex},
+    dex::{Creature, Dex},
     player::Player,
     save::Save,
     team::Team,
@@ -70,7 +70,7 @@ fn spawn_wild_encounter(
         if nbr < 64 {
             // start a random encounter
             let creature = dex.random();
-            wild_encounter_writer.write(WildEncounterEvent(creature));
+            wild_encounter_writer.write(WildEncounterEvent(creature.0));
         }
     }
 }

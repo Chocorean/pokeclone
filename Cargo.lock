@@ -622,6 +622,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_easy_gif"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6c876bad621c0c5c609bbfebe371c43bb731192b31ec3230b0ed85d7ef6b4d68"
+dependencies = [
+ "bevy",
+ "gif",
+ "thiserror 2.0.16",
+]
+
+[[package]]
 name = "bevy_ecs"
 version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4078,6 +4089,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy-inspector-egui",
+ "bevy_easy_gif",
  "bevy_ecs_ldtk",
  "bevy_egui",
  "egui_extras",
