@@ -3,9 +3,8 @@ use bevy_ecs_ldtk::GridCoords;
 use serde::{Deserialize, Serialize};
 use std::fs;
 
+use super::SAVE_PATH;
 use crate::team::Team;
-
-const SAVE_PATH: &str = "assets/saves/save.json";
 
 #[derive(Serialize, Deserialize, Resource)]
 pub struct Save {
