@@ -3,7 +3,7 @@ use bevy_ecs_ldtk::prelude::*;
 
 use crate::{
     AppState,
-    player::{Direction, Player, PlayerBundle, move_player_from_input},
+    player::{Direction, Player},
     save::Save,
     team::Team,
 };
@@ -23,7 +23,6 @@ impl Plugin for WorldPlugin {
             .register_ldtk_int_cell_for_layer::<HerbBundle>("Walls", 2)
             .register_ldtk_entity::<GoalBundle>("Goal")
             .register_ldtk_entity::<EntryBundle>("Entry")
-            .register_ldtk_entity::<PlayerBundle>("Player")
             .register_ldtk_entity::<NPCsBundle>("NPCs")
             .add_systems(OnEnter(AppState::ResumeGame), load_game)
             .add_systems(
@@ -43,7 +42,6 @@ impl Plugin for WorldPlugin {
                     cache_wall_locations,
                     handle_player_interaction,
                     handle_through_goal,
-                    move_player_from_input,
                 )
                     .run_if(in_state(AppState::InGame)),
             )
