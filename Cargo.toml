@@ -6,8 +6,7 @@ edition = "2024"
 [dependencies]
 bevy = { version = "0.16.1", features = ["dynamic_linking", "flac", "gif"] }
 bevy-inspector-egui = "0.33.1"
-bevy_easy_gif = "0.1.0"
-# bevy = { version = "0.16.1", features = ["flac", "gif"] }
+bevy_easy_gif = "0.1.1"
 bevy_ecs_ldtk = { version = "0.12.0", features = ["atlas"] }
 bevy_egui = "0.36.0"
 egui_extras = { version = "0.32.1", features = ["all_loaders"] }
