@@ -14,7 +14,7 @@ impl Plugin for HerbsPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         app.init_resource::<LevelHerbs>()
             // TODO Change Walls in ldtk and reflect here + walls
-            .register_ldtk_int_cell_for_layer::<HerbBundle>("Walls", 2)
+            .register_ldtk_int_cell_for_layer::<HerbBundle>("TileEntities", 2)
             .add_systems(
                 Update,
                 cache_herb_locations.run_if(in_state(AppState::InGame)),
