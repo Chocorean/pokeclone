@@ -14,7 +14,8 @@ use bevy::prelude::*;
 use bevy::state::state::States;
 use bevy::window::WindowResolution;
 use bevy_easy_gif::prelude::GifPlugin;
-use bevy_ecs_ldtk::{LdtkPlugin, LdtkWorldBundle, LevelSelection};
+use bevy_ecs_ldtk::assets::LevelIndices;
+use bevy_ecs_ldtk::{LdtkPlugin, LdtkWorldBundle, LevelIid, LevelSelection};
 
 use crate::animation::AnimationsPlugin;
 use crate::camera::{CamPlugin, WorldBundle};
@@ -87,5 +88,5 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         },
         // AudioPlayer::new(asset_server.load("sfx/town.flac")),
     ));
-    commands.insert_resource(LevelSelection::Identifier("Level_0".to_string()));
+    commands.insert_resource(LevelSelection::index(0));
 }
