@@ -12,7 +12,7 @@ use crate::{
 mod components;
 mod systems;
 
-pub use components::{Direction, Player};
+pub use components::Player;
 
 pub struct PlayerPlugin;
 

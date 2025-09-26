@@ -7,16 +7,17 @@ mod player;
 mod save;
 mod team;
 mod ui;
+mod utils;
 mod world;
 
 use bevy::prelude::*;
 use bevy::state::state::States;
 use bevy::window::WindowResolution;
 use bevy_easy_gif::prelude::GifPlugin;
-use bevy_ecs_ldtk::LdtkPlugin;
+use bevy_ecs_ldtk::{LdtkPlugin, LdtkWorldBundle, LevelSelection};
 
 use crate::animation::AnimationsPlugin;
-use crate::camera::CamPlugin;
+use crate::camera::{CamPlugin, WorldBundle};
 use crate::dex::DexPlugin;
 use crate::event::EventsPlugin;
 use crate::fight::FightPlugin;
@@ -72,6 +73,19 @@ fn main() {
     if cfg!(debug_assertions) {
         app.add_plugins(bevy_inspector_egui::quick::WorldInspectorPlugin::new());
     }
+    app.add_systems(Startup, setup);
 
     app.run();
+}
+
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.spawn((
+        WorldBundle,
+        LdtkWorldBundle {
+            ldtk_handle: asset_server.load("ldtk/world.ldtk").into(),
+            ..Default::default()
+        },
+        // AudioPlayer::new(asset_server.load("sfx/town.flac")),
+    ));
+    commands.insert_resource(LevelSelection::Identifier("Level_0".to_string()));
 }

@@ -70,27 +70,9 @@ pub struct WorldCamera;
 /// todo: need to refactor and seperate world and world ui
 pub fn setup_world_camera(
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    save_res: Option<Res<Save>>,
     mut images: ResMut<Assets<Image>>,
     mut egui_user_textures: ResMut<EguiUserTextures>,
 ) {
-    commands.spawn((
-        WorldBundle,
-        LdtkWorldBundle {
-            // ldtk_handle: asset_server.load("ldtk/mymap.ldtk").into(),
-            ldtk_handle: asset_server.load("ldtk/map_small.ldtk").into(),
-            ..Default::default()
-        },
-        // AudioPlayer::new(asset_server.load("sfx/town.flac")),
-    ));
-    let index = if let Some(save) = save_res {
-        save.level as usize
-    } else {
-        0
-    };
-    commands.insert_resource(LevelSelection::index(index));
-
     // --- create render texture ---
     let size = Extent3d {
         width: 800,
@@ -137,12 +119,13 @@ pub fn setup_world_camera(
 pub fn camera_follow_player(
     time: Res<Time>,
     grid_size: Res<GridSize>,
-    player_q: Query<&GridCoords, With<Player>>,
+    player_q: Query<&GridCoords, (With<Player>, Changed<GridCoords>)>,
     mut camera_q: Query<&mut Transform, With<WorldCamera>>,
 ) {
     if let Ok(player_coords) = player_q.single()
         && let Ok(mut cam_transform) = camera_q.single_mut()
     {
+        // dbg!("update cam at ", player_coords);
         // target position
         let target_xy = bevy_ecs_ldtk::utils::grid_coords_to_translation(
             *player_coords,
@@ -155,5 +138,8 @@ pub fn camera_follow_player(
         let alpha = 1.0 - (-smoothing * time.delta_secs()).exp();
 
         cam_transform.translation = cam_transform.translation.lerp(target, alpha);
+
+        // lets ditch all for now
+        cam_transform.translation = target;
     }
 }
