@@ -4,7 +4,6 @@ use bevy_ecs_ldtk::GridCoords;
 use crate::{
     animation::{AnimationConfig, trigger_animation},
     event::MoveInBushEvent,
-    player,
     utils::Direction,
     world::{LevelHerbs, LevelNPCs, LevelWalls},
 };
@@ -32,7 +31,6 @@ pub fn move_player_from_input(
             &mut Direction,
             &mut AnimationConfig,
             &mut Sprite,
-            &mut Transform,
         ),
         With<Player>,
     >,
@@ -43,8 +41,7 @@ pub fn move_player_from_input(
     mut event_writer: EventWriter<MoveInBushEvent>,
 ) {
     // Read keyboard input
-    let (mut player_grid_coords, mut direction, mut animation, mut sprite, mut transform) =
-        player_q.into_inner();
+    let (mut player_grid_coords, mut direction, mut animation, mut sprite) = player_q.into_inner();
     if input.just_pressed(KeyCode::KeyW) {
         *direction = Direction::Up;
         *animation = AnimationConfig::new(3, 5, 10);
