@@ -1,6 +1,6 @@
 # A Pokemon-inspired first game
 
-A pokemon inspired "game" - more like a prototype to be fair.
+A pokemon inspired "game" - more like a prototype to be fair. [WASM Demo!](https://chocorean.github.io/pokeclone-demo/)
 
 The main objective was to finish something that looks like a game, pratice Rust and discover ECS through Bevy.
 
