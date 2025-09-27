@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_ecs_ldtk::{GridCoords, LdtkEntity};
+use bevy_ecs_ldtk::{GridCoords, LdtkEntity, Worldly};
 
 use crate::{animation::AnimationConfig, utils::Direction};
 
@@ -15,4 +15,6 @@ pub struct PlayerBundle {
     grid_coords: GridCoords,
     direction: Direction,
     animation: AnimationConfig,
+    #[worldly]
+    worldly: Worldly,
 }

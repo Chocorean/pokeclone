@@ -13,7 +13,7 @@ mod world;
 use bevy::prelude::*;
 use bevy::state::state::States;
 use bevy::window::WindowResolution;
-use bevy_easy_gif::prelude::GifPlugin;
+use bevy_easy_gif::GifPlugin;
 use bevy_ecs_ldtk::{LdtkPlugin, LdtkWorldBundle, LevelSelection};
 
 use crate::animation::AnimationsPlugin;

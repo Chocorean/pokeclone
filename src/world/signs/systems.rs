@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_easy_gif::prelude::{Gif, GifAsset};
+use bevy_easy_gif::{Gif, GifAsset};
 use bevy_ecs_ldtk::{EntityInstance, GridCoords};
 
 use crate::{

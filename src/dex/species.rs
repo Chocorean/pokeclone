@@ -1,5 +1,5 @@
 use bevy::{asset::Handle, ecs::resource::Resource};
-use bevy_easy_gif::prelude::GifAsset;
+use bevy_easy_gif::GifAsset;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 

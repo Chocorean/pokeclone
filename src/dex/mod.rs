@@ -8,7 +8,7 @@ use bevy::{
         system::{Commands, ResMut},
     },
 };
-use bevy_easy_gif::prelude::GifAsset;
+use bevy_easy_gif::GifAsset;
 use rand::Rng;
 
 use crate::{

@@ -2,6 +2,7 @@
 //!
 //! just short functions to read ldtks entities custom data
 
+use bevy::prelude::*;
 use bevy_ecs_ldtk::{EntityInstance, ldtk::FieldValue};
 
 use crate::{utils::Direction, world::NPCKind};

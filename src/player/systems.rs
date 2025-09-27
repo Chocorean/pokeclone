@@ -1,17 +1,18 @@
 use bevy::prelude::*;
+use bevy_easy_gif::{Gif, GifDespawn};
 use bevy_ecs_ldtk::GridCoords;
 
 use crate::{
     animation::{AnimationConfig, trigger_animation},
     event::MoveInBushEvent,
     utils::Direction,
-    world::{LevelHerbs, LevelNPCs, LevelWalls},
+    world::{GridSize, LevelHerbs, LevelNPCs, LevelWalls},
 };
 
 use super::components::Player;
 
 /// Overwrite LTDK's atlas configuration.
-pub(crate) fn setup_player_atlas(
+pub fn setup_player_atlas(
     player_q: Single<&mut Sprite, Added<Player>>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
@@ -25,6 +26,9 @@ pub(crate) fn setup_player_atlas(
 }
 
 pub fn move_player_from_input(
+    mut commands: Commands,
+    asset_server: ResMut<AssetServer>,
+    grid_size: Res<GridSize>,
     player_q: Single<
         (
             &mut GridCoords,
@@ -58,15 +62,29 @@ pub fn move_player_from_input(
         return;
     };
 
-    sprite.texture_atlas.as_mut().unwrap().index = animation.first_sprite_index;
-    trigger_animation(&mut animation);
-
     // Update coords and trigger other stuff
     let destination = direction.next_coords(*player_grid_coords);
     if !level_walls.in_wall(&destination) && !level_npcs.in_npc(&destination) {
         *player_grid_coords = destination;
+
+        sprite.texture_atlas.as_mut().unwrap().index = animation.first_sprite_index;
+        trigger_animation(&mut animation);
+
         if level_herbs.herb_locations.contains(&destination) {
             event_writer.write(MoveInBushEvent);
         }
+    } else {
+        // ? gif on top of player
+        let gif_pos = bevy_ecs_ldtk::utils::grid_coords_to_translation(
+            *player_grid_coords + GridCoords::new(0, 1),
+            IVec2::splat(grid_size.0),
+        )
+        .extend(50.); // high Z so it always show up
+        let handle = asset_server.load("textures/animations/question.gif");
+        commands.spawn((
+            Gif { handle },
+            Transform::from_translation(gif_pos),
+            GifDespawn,
+        ));
     }
 }

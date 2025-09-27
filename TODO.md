@@ -19,13 +19,13 @@
 
 ### Rewrite the player entity
 
-- [Code] NPCs directions
 - [Code] Keep moving player when key stays pressed
 - [Code] Player teleports on map instead of moving
 - [Code] custom player position when entering a level (not always at the spawn loc)
 
 ## Done
 
+- [Code] NPCs directions
 - [LDTK] Add another level
 - [Code] Link the two levels with a gate or something
 - [LDTK] Add custom data to goals (level and coords dest)

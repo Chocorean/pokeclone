@@ -623,9 +623,9 @@ dependencies = [
 
 [[package]]
 name = "bevy_easy_gif"
-version = "0.1.1"
+version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "10b4e33b41d3b374915cbce4d0198678fa971b39563be084a99fe4c1f16604a7"
+checksum = "e987f1981e6865a685773f36c1c14968543b1269a589ad6583cf081e4187852d"
 dependencies = [
  "bevy",
  "gif",
