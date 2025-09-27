@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_ecs_ldtk::{GridCoords, utils::grid_coords_to_translation};
 
 use crate::{
-    utils::{SmoothMove, UpdatePosAfterSave},
+    utils::{SmoothMove, UpdatePosAfterSave, movement::Y_CHAR_OFFSET},
     world::GridSize,
 };
 
@@ -14,11 +14,12 @@ pub fn update_translation_after_save(
     for (mut trans, coords, entity) in entity_q {
         trans.translation = grid_coords_to_translation(*coords, IVec2::splat(grid_size.0))
             .extend(trans.translation.z);
+        trans.translation.y += Y_CHAR_OFFSET;
         commands.entity(entity).remove::<UpdatePosAfterSave>();
     }
 }
 
-/// Move everything on the map accordingly to their [GridCoords]
+/// Move everything on the map with [SmoothMove] accordingly to their [GridCoords]
 pub fn translate_grid_coords_entities(
     mut commands: Commands,
     time: Res<Time>,
@@ -32,10 +33,13 @@ pub fn translate_grid_coords_entities(
     {
         smooth_move.timer.tick(time.delta());
 
-        let start_trans = grid_coords_to_translation(smooth_move.start, IVec2::splat(grid_size.0))
+        let mut start_trans =
+            grid_coords_to_translation(smooth_move.start, IVec2::splat(grid_size.0))
+                .extend(transform.translation.z);
+        start_trans.y += Y_CHAR_OFFSET;
+        let mut end_trans = grid_coords_to_translation(smooth_move.end, IVec2::splat(grid_size.0))
             .extend(transform.translation.z);
-        let end_trans = grid_coords_to_translation(smooth_move.end, IVec2::splat(grid_size.0))
-            .extend(transform.translation.z);
+        end_trans.y += Y_CHAR_OFFSET;
 
         let t = smooth_move.timer.fraction();
         transform.translation = start_trans.lerp(end_trans, t);

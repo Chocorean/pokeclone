@@ -4,7 +4,7 @@ use bevy_ecs_ldtk::{EntityInstance, GridCoords};
 use crate::{
     player::Player,
     utils::{
-        Direction, read_dir_from_ldtk_entity, read_npc_kind_from_ldtk_entity,
+        Direction, Y_CHAR_OFFSET, read_dir_from_ldtk_entity, read_npc_kind_from_ldtk_entity,
         read_str_from_ldtk_entity,
     },
     world::npcs::components::{LevelNPCs, NPC, NPCKind},
@@ -43,14 +43,14 @@ pub fn cache_npc_locations(
 
 pub fn add_sprite_to_npc(
     asset_server: ResMut<AssetServer>,
-    npc_q: Query<(&mut Sprite, &EntityInstance), Added<NPC>>,
+    npc_q: Query<(&mut Sprite, &mut Transform, &EntityInstance), Added<NPC>>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     let librarian: Handle<Image> = asset_server.load("textures/npcs/librarian.png");
     let monk: Handle<Image> = asset_server.load("textures/npcs/monk.png");
     let writer: Handle<Image> = asset_server.load("textures/npcs/writer.png");
 
-    for (mut sprite, entity) in npc_q {
+    for (mut sprite, mut transform, entity) in npc_q {
         let direction = read_dir_from_ldtk_entity(entity);
         sprite.image = match read_npc_kind_from_ldtk_entity(entity) {
             NPCKind::Librarian => librarian.clone(),
@@ -69,5 +69,7 @@ pub fn add_sprite_to_npc(
         };
         sprite.texture_atlas = Some(atlas);
         sprite.flip_x = direction == Direction::Right;
+
+        transform.translation.y += Y_CHAR_OFFSET;
     }
 }

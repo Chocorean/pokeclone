@@ -8,6 +8,8 @@ pub use systems::*;
 
 use crate::AppState;
 
+pub const Y_CHAR_OFFSET: f32 = 4.;
+
 pub struct MovementPlugin;
 
 impl Plugin for MovementPlugin {

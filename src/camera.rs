@@ -6,10 +6,9 @@ use bevy::{
         view::RenderLayers,
     },
 };
-use bevy_ecs_ldtk::GridCoords;
 use bevy_egui::EguiUserTextures;
 
-use crate::{AppState, player::Player, world::GridSize};
+use crate::{AppState, player::Player};
 
 pub struct CamPlugin;
 
