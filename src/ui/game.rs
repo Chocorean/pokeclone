@@ -277,7 +277,7 @@ pub fn setup_game_ui(
             dex_list_ui(ui, &dex);
         });
     if save {
-        event_writer.write(NewSaveEvent {});
+        event_writer.write(NewSaveEvent);
     }
     // other buttons
 
@@ -294,6 +294,6 @@ pub fn handle_game_ui_input(
     if keyboard_input.just_pressed(KeyCode::Escape) {
         next_state.set(AppState::MainMenu);
     } else if keyboard_input.just_pressed(KeyCode::F1) {
-        event_writer.write(NewSaveEvent {});
+        event_writer.write(NewSaveEvent);
     }
 }

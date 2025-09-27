@@ -64,10 +64,7 @@ pub struct WorldTexture(pub Handle<Image>);
 #[derive(Component)]
 pub struct WorldCamera;
 
-/// Initialize the world, and if a save is found, it is loaded.
-/// It spawns an additional camera that renders to a texture,
-/// which is then used in the UI.
-/// todo: need to refactor and seperate world and world ui
+/// Initialize the world camera, which displays the actual game.
 pub fn setup_world_camera(
     mut commands: Commands,
     mut images: ResMut<Assets<Image>>,
@@ -117,29 +114,9 @@ pub fn setup_world_camera(
 
 /// Move the camera accordingly when the player's coordinates have changed.
 pub fn camera_follow_player(
-    time: Res<Time>,
-    grid_size: Res<GridSize>,
-    player_q: Query<&GridCoords, (With<Player>, Changed<GridCoords>)>,
-    mut camera_q: Query<&mut Transform, With<WorldCamera>>,
+    player_coords: Single<&Transform, (With<Player>, Changed<Transform>)>,
+    mut cam_transform: Single<&mut Transform, (With<WorldCamera>, Without<Player>)>,
 ) {
-    if let Ok(player_coords) = player_q.single()
-        && let Ok(mut cam_transform) = camera_q.single_mut()
-    {
-        // dbg!("update cam at ", player_coords);
-        // target position
-        let target_xy = bevy_ecs_ldtk::utils::grid_coords_to_translation(
-            *player_coords,
-            IVec2::splat(grid_size.0),
-        );
-        let target = target_xy.extend(cam_transform.translation.z);
-
-        // hardcoded smoothing (higher = snappier)
-        let smoothing: f32 = 4.0;
-        let alpha = 1.0 - (-smoothing * time.delta_secs()).exp();
-
-        cam_transform.translation = cam_transform.translation.lerp(target, alpha);
-
-        // lets ditch all for now
-        cam_transform.translation = target;
-    }
+    // not taking the whole transform because it changes the camera config (distance, etc)
+    cam_transform.translation = player_coords.translation;
 }

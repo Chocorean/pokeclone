@@ -23,6 +23,7 @@ use crate::event::EventsPlugin;
 use crate::fight::FightPlugin;
 use crate::player::PlayerPlugin;
 use crate::ui::UiPlugin;
+use crate::utils::MovementPlugin;
 use crate::world::WorldPlugin;
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]
@@ -63,6 +64,7 @@ fn main() {
         WorldPlugin,
         UiPlugin,
         CamPlugin,
+        MovementPlugin,
         DexPlugin,
         PlayerPlugin,
         AnimationsPlugin,

@@ -1,8 +1,11 @@
 mod ldtk;
+mod movement;
 
 use bevy::ecs::component::Component;
 use bevy_ecs_ldtk::GridCoords;
+
 pub use ldtk::*;
+pub use movement::*;
 
 #[derive(Default, PartialEq, Component, Clone, Debug)]
 pub enum Direction {
