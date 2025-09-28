@@ -31,15 +31,9 @@ impl Plugin for CamPlugin {
                 setup_world_camera,
             )
             .add_systems(
-                OnTransition {
-                    exited: AppState::ResumeGame,
-                    entered: AppState::InGame,
-                },
-                setup_world_camera,
-            )
-            .add_systems(
                 Update,
                 camera_follow_player
+                    // .run_if(in_state(AppState::InGame)), TODO Check si on peut remplacer ca
                     .run_if(in_state(AppState::InFight).or(in_state(AppState::InGame))),
             );
     }
@@ -150,6 +144,12 @@ pub fn camera_follow_player(
 
     let current_level_width = current_level.px_wid as f32;
     let current_level_height = current_level.px_hei as f32;
+
+    // if map is smaller than camera view (i.e inside building),
+    // just center on player
+    if current_level_height < CAMERA_HEIGHT || current_level_width < CAMERA_WIDTH {
+        cam_transform.translation = player_coords.translation;
+    }
 
     let half_window_width = CAMERA_WIDTH / 2.0;
 
