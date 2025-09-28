@@ -6,9 +6,17 @@ use bevy::{
         view::RenderLayers,
     },
 };
+use bevy_ecs_ldtk::{
+    LdtkProjectHandle, LevelIid, LevelSelection,
+    assets::{LdtkProject, LevelIndices, LevelMetadataAccessor},
+};
 use bevy_egui::EguiUserTextures;
 
 use crate::{AppState, player::Player};
+
+const CAMERA_WIDTH: f32 = 800.;
+const CAMERA_HEIGHT: f32 = 600.;
+const CAMERA_SCALE: f32 = 0.5;
 
 pub struct CamPlugin;
 
@@ -71,8 +79,8 @@ pub fn setup_world_camera(
 ) {
     // --- create render texture ---
     let size = Extent3d {
-        width: 800,
-        height: 600,
+        width: CAMERA_WIDTH as u32,
+        height: CAMERA_HEIGHT as u32,
         ..default()
     };
     let mut image = Image {
@@ -103,7 +111,7 @@ pub fn setup_world_camera(
             ..default()
         },
         // zoom x2
-        Transform::from_scale(Vec3::splat(0.5)),
+        Transform::from_scale(Vec3::splat(CAMERA_SCALE)),
         WorldCamera,
     ));
 
@@ -111,11 +119,60 @@ pub fn setup_world_camera(
     commands.insert_resource(WorldTexture(image_handle));
 }
 
-/// Move the camera accordingly when the player's coordinates have changed.
+/// Move the camera accordingly when the player's coordinates have changed, with clamping.
+///
+/// Ripped from [invertedEcho's project](https://github.com/invertedEcho/platformer-bevy-ldtk/blob/master/src/camera/systems.rs#L19)
 pub fn camera_follow_player(
     player_coords: Single<&Transform, (With<Player>, Changed<Transform>)>,
     mut cam_transform: Single<&mut Transform, (With<WorldCamera>, Without<Player>)>,
+    level_selection: Res<LevelSelection>,
+    level_query: Query<&LevelIid, (Without<Projection>, Without<Player>)>,
+    ldtk_projects: Query<&LdtkProjectHandle>,
+    ldtk_project_assets: Res<Assets<LdtkProject>>,
 ) {
-    // not taking the whole transform because it changes the camera config (distance, etc)
-    cam_transform.translation = player_coords.translation;
+    // find level and get its width/height
+    let ldtk_project = ldtk_project_assets
+        .get(ldtk_projects.single().unwrap())
+        .unwrap();
+    let Some(current_level) = level_query.iter().find_map(|level_iid| {
+        let level = ldtk_project
+            .get_raw_level_by_iid(&level_iid.to_string())
+            .unwrap();
+
+        // TODO: why levelindices? we dont use indices
+        level_selection
+            .is_match(&LevelIndices::default(), level)
+            .then_some(level)
+    }) else {
+        error!("Failed to find level, camera_follow_player may be broken.");
+        return;
+    };
+
+    let current_level_width = current_level.px_wid as f32;
+    let current_level_height = current_level.px_hei as f32;
+
+    let half_window_width = CAMERA_WIDTH / 2.0;
+
+    // left edge of camera should not go beyond level width
+    let new_camera_translation_x =
+        (half_window_width * CAMERA_SCALE).max(player_coords.translation.x);
+
+    // right edge of camera should not go beyond level width
+    if new_camera_translation_x + half_window_width * CAMERA_SCALE < current_level_width {
+        cam_transform.translation.x += new_camera_translation_x - cam_transform.translation.x;
+    }
+
+    // bottom of camera should not go below level height
+    let half_window_height = CAMERA_HEIGHT / 2.0;
+    let new_camera_translation_y =
+        (half_window_height * CAMERA_SCALE).max(player_coords.translation.y);
+
+    let top_of_player = player_coords.translation.y + half_window_height * CAMERA_SCALE;
+
+    // top of camera should not go above level height
+    if top_of_player > current_level_height {
+        return;
+    }
+
+    cam_transform.translation.y += new_camera_translation_y - cam_transform.translation.y;
 }
