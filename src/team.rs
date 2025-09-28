@@ -1,4 +1,4 @@
-use bevy::ecs::resource::Resource;
+use bevy::ecs::{resource::Resource, system::Res};
 use serde::{Deserialize, Serialize};
 
 use crate::dex::Dex;
@@ -9,6 +9,22 @@ pub struct Team(pub Vec<TeamMember>);
 impl Team {
     pub fn new() -> Self {
         Team(Vec::new())
+    }
+
+    /// Spawns a new team with `n` members (min 1, max 5)
+    pub fn new_random(n: usize, dex: Res<Dex>) -> Self {
+        let mut team = vec![];
+        for _ in 0..n.max(1).min(5) {
+            let (creature, _) = dex.random();
+            let ids = dex.get_creature_ids(&creature);
+            let member = TeamMember {
+                surname: None,
+                creature_id: (ids.0, ids.1),
+                hp: creature.stats.hp,
+            };
+            team.push(member);
+        }
+        Team(team)
     }
 }
 

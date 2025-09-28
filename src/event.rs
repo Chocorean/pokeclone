@@ -70,8 +70,10 @@ fn spawn_wild_encounter(
     dex: Res<Dex>,
 ) {
     for _ in move_in_bush_reader.read() {
+        info!("herb event");
         let mut rng = rand::rng();
         let nbr = rand::Rng::random::<u8>(&mut rng);
+        info!(nbr);
         if nbr < 64 {
             // start a random encounter
             let creature = dex.random();

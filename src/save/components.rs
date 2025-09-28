@@ -1,10 +1,10 @@
-use bevy::ecs::resource::Resource;
+use bevy::ecs::{resource::Resource, system::Res};
 use bevy_ecs_ldtk::GridCoords;
 use serde::{Deserialize, Serialize};
 use std::fs;
 
 use super::SAVE_PATH;
-use crate::team::Team;
+use crate::{dex::Dex, team::Team};
 
 #[derive(Serialize, Deserialize, Resource)]
 pub struct Save {
@@ -83,6 +83,13 @@ impl Save {
             .unwrap();
         let save: Save = serde_json::from_str(&content).unwrap();
         Some(save)
+    }
+
+    /// Default save, but with between 1 and 5 starters !
+    pub fn default_with_team(n: usize, dex: Res<Dex>) -> Self {
+        let mut save = Save::default();
+        save.team = Team::new_random(n, dex);
+        save
     }
 }
 

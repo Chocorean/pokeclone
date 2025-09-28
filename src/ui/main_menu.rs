@@ -6,6 +6,7 @@ use bevy_egui::{
 
 use crate::{
     AppState,
+    dex::Dex,
     save::{Save, load_save, new_save},
 };
 
@@ -14,6 +15,7 @@ pub fn setup_main_menu_ui(
     commands: Commands,
     mut contexts: EguiContexts,
     mut next_state: ResMut<NextState<AppState>>,
+    dex: Res<Dex>,
 ) -> Result {
     // buttons states
     let mut resume = false;
@@ -58,7 +60,7 @@ pub fn setup_main_menu_ui(
         load_save(commands);
         next_state.set(AppState::InGame);
     } else if new {
-        new_save(commands);
+        new_save(commands, dex);
         next_state.set(AppState::InGame);
     } else if options {
         next_state.set(AppState::OptionsMenu);

@@ -9,15 +9,12 @@ pub fn cache_herb_locations(
     mut ev_levels: EventReader<LevelEvent>,
 ) {
     for ev in ev_levels.read() {
-        if !matches!(ev, LevelEvent::Transformed(_)) {
-            // We only load one level at a time so we can exit if the level
-            // is not done loading
-            return;
-        }
-
-        level_walls.herb_locations = HashSet::new(); // reset
-        for herb_coords in herbs.iter() {
-            level_walls.herb_locations.insert(*herb_coords);
+        if let LevelEvent::Transformed(_) = ev {
+            dbg!("Caching herbs");
+            level_walls.herb_locations = HashSet::new(); // reset
+            for herb_coords in herbs.iter() {
+                level_walls.herb_locations.insert(*herb_coords);
+            }
         }
     }
 }

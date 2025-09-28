@@ -112,6 +112,19 @@ impl Dex {
         individuals[creature_idx].clone()
     }
 
+    pub fn get_creature_ids(&self, creature: &Creature) -> (usize, usize) {
+        let species_id = creature.species_id;
+        let species = self.species.get(species_id).expect("species not found");
+        let creature_id = species
+            .individuals
+            .iter()
+            .enumerate()
+            .find(|(_, c)| c.0.name == creature.name)
+            .expect("chelou de pas avoir trouve le boug")
+            .0;
+        (species_id, creature_id)
+    }
+
     /// Query the specified creature
     /// could use newtypes here to reduce confusion.
     pub fn get_creature(&self, ids: (usize, usize)) -> &(Creature, Handle<GifAsset>) {

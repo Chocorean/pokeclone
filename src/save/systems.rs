@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy_ecs_ldtk::{GridCoords, LevelSelection, utils::grid_coords_to_translation};
 
 use crate::{
+    dex::Dex,
     player::Player,
     save::Save,
     utils::{UpdatePosAfterSave, Y_CHAR_OFFSET},
@@ -9,8 +10,10 @@ use crate::{
 };
 
 /// Called by the UI after 'New Game' was pressed
-pub fn new_save(mut commands: Commands) {
-    let save = Save::default();
+///
+/// initialize the team with one random creature
+pub fn new_save(mut commands: Commands, dex: Res<Dex>) {
+    let save = Save::default_with_team(1, dex);
     commands.insert_resource(LevelSelection::Identifier(save.level.clone()));
     commands.insert_resource(save);
 }

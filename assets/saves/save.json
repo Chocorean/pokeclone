@@ -1,8 +1,17 @@
 {
-    "level": "House_N",
+    "level": "Village",
     "coords": [
-        3,
-        2
+        1,
+        11
     ],
-    "team": []
+    "team": [
+        {
+            "surname": null,
+            "creature_id": [
+                0,
+                3
+            ],
+            "hp": 120
+        }
+    ]
 }

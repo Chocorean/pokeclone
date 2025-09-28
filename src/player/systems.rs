@@ -79,6 +79,8 @@ pub fn move_player_from_input(
             .entity(entity)
             .insert(SmoothMove::new(*player_grid_coords, destination));
 
+        dbg!("check for herb");
+        dbg!(level_herbs.herb_locations.len());
         if level_herbs.herb_locations.contains(&destination) {
             event_writer.write(MoveInBushEvent);
         }
