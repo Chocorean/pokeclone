@@ -7,8 +7,8 @@ use bevy::{
     },
 };
 use bevy_ecs_ldtk::{
-    LdtkProjectHandle, LevelIid, LevelSelection,
-    assets::{LdtkProject, LevelIndices, LevelMetadataAccessor},
+    LdtkProjectHandle, LevelIid,
+    assets::{LdtkProject, LevelMetadataAccessor},
 };
 use bevy_egui::EguiUserTextures;
 
@@ -119,8 +119,7 @@ pub fn setup_world_camera(
 pub fn camera_follow_player(
     player_coords: Single<&Transform, (With<Player>, Changed<Transform>)>,
     mut cam_transform: Single<&mut Transform, (With<WorldCamera>, Without<Player>)>,
-    level_selection: Res<LevelSelection>,
-    level_query: Query<&LevelIid, (Without<Projection>, Without<Player>)>,
+    level_query: Query<&LevelIid>,
     ldtk_projects: Query<&LdtkProjectHandle>,
     ldtk_project_assets: Res<Assets<LdtkProject>>,
 ) {
@@ -128,16 +127,10 @@ pub fn camera_follow_player(
     let ldtk_project = ldtk_project_assets
         .get(ldtk_projects.single().unwrap())
         .unwrap();
-    let Some(current_level) = level_query.iter().find_map(|level_iid| {
-        let level = ldtk_project
-            .get_raw_level_by_iid(&level_iid.to_string())
-            .unwrap();
-
-        // TODO: why levelindices? we dont use indices
-        level_selection
-            .is_match(&LevelIndices::default(), level)
-            .then_some(level)
-    }) else {
+    let Some(current_level) = level_query
+        .iter()
+        .find_map(|level_iid| ldtk_project.get_raw_level_by_iid(&level_iid.to_string()))
+    else {
         error!("Failed to find level, camera_follow_player may be broken.");
         return;
     };

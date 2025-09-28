@@ -5,8 +5,10 @@
 ## Issues
 
 - [Code] Leaving and re-entering the game messes up the game
+- [Code] Add offset to player when new game
 - [Code] Fight starts before the player is done moving
 - [Code/LDTK] game crashes when starting a fight with an empty team. (which makes sense right now).
+- [Code] Cant save in other level than Village
 
 ## TODO
 

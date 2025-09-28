@@ -8,7 +8,7 @@ use crate::{
 
 pub fn update_translation_after_save(
     mut commands: Commands,
-    entity_q: Query<(&mut Transform, &GridCoords, Entity), Added<UpdatePosAfterSave>>,
+    entity_q: Query<(&mut Transform, &GridCoords, Entity), With<UpdatePosAfterSave>>,
     grid_size: Res<GridSize>,
 ) {
     for (mut trans, coords, entity) in entity_q {

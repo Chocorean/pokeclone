@@ -16,7 +16,6 @@ pub struct EventsPlugin;
 impl Plugin for EventsPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         app.add_event::<NewSaveEvent>()
-            .add_event::<LoadSaveEvent>()
             .add_event::<MoveInBushEvent>()
             .add_event::<WildEncounterEvent>()
             .add_systems(
@@ -39,18 +38,14 @@ pub fn new_save(
     team: Res<Team>,
 ) {
     for _ in events.read() {
-        let level_id = match *level_res {
-            LevelSelection::Indices(x) => x.level,
+        let level_id = match level_res.clone() {
+            LevelSelection::Identifier(x) => x,
             _ => todo!("not supported"),
         };
         let coords = player_q.single().unwrap();
-        Save::new(level_id as i32, *coords, team.clone());
+        Save::new(level_id, *coords, team.clone());
     }
 }
-
-#[derive(Event)]
-/// Trigger when the player loads the save.
-pub struct LoadSaveEvent;
 
 // "Wild encounter"-related events
 

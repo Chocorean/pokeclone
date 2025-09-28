@@ -8,13 +8,13 @@ use crate::team::Team;
 
 #[derive(Serialize, Deserialize, Resource)]
 pub struct Save {
-    pub level: i32,
+    pub level: String,
     pub coords: (i32, i32),
     pub team: Team,
 }
 
 impl Save {
-    pub fn new(level: i32, coords: GridCoords, team: Team) {
+    pub fn new(level: String, coords: GridCoords, team: Team) {
         let save = Save {
             level,
             coords: (coords.x, coords.y),
@@ -83,5 +83,15 @@ impl Save {
             .unwrap();
         let save: Save = serde_json::from_str(&content).unwrap();
         Some(save)
+    }
+}
+
+impl Default for Save {
+    fn default() -> Self {
+        Self {
+            level: "Village".into(),
+            coords: (1, 13), // cf LDTK project
+            team: Team::new(),
+        }
     }
 }

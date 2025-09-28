@@ -4,10 +4,14 @@ use bevy_egui::{
     egui::{self, Color32},
 };
 
-use crate::{AppState, save::Save};
+use crate::{
+    AppState,
+    save::{Save, load_save, new_save},
+};
 
 /// Build the "main menu" window, with a few buttons: Continue (if save exists), New Game, and Options.
 pub fn setup_main_menu_ui(
+    commands: Commands,
     mut contexts: EguiContexts,
     mut next_state: ResMut<NextState<AppState>>,
 ) -> Result {
@@ -51,14 +55,12 @@ pub fn setup_main_menu_ui(
     });
 
     if resume {
-        next_state.set(AppState::ResumeGame);
-    }
-
-    if new {
+        load_save(commands);
         next_state.set(AppState::InGame);
-    }
-
-    if options {
+    } else if new {
+        new_save(commands);
+        next_state.set(AppState::InGame);
+    } else if options {
         next_state.set(AppState::OptionsMenu);
     }
 

@@ -486,8 +486,8 @@
 			"uiTileRect": null,
 			"nineSliceBorders": [],
 			"maxCount": 1,
-			"limitScope": "PerLevel",
-			"limitBehavior": "MoveLastOne",
+			"limitScope": "PerWorld",
+			"limitBehavior": "DiscardOldOnes",
 			"pivotX": 0,
 			"pivotY": 0,
 			"fieldDefs": []
@@ -1096,7 +1096,7 @@
 	], "externalEnums": [], "levelFields": [] },
 	"levels": [
 		{
-			"identifier": "Level_0",
+			"identifier": "Village",
 			"iid": "d4125f90-8560-11f0-b109-375c5575a611",
 			"uid": 0,
 			"worldX": 0,
@@ -1106,7 +1106,7 @@
 			"pxHei": 400,
 			"__bgColor": "#696A79",
 			"bgColor": null,
-			"useAutoIdentifier": true,
+			"useAutoIdentifier": false,
 			"bgRelPath": null,
 			"bgPos": null,
 			"bgPivotX": 0.5,
@@ -2914,7 +2914,7 @@
 			"__neighbours": [ { "levelIid": "c72a9460-8560-11f0-b250-6dc4faa06eb6", "dir": "n" }, { "levelIid": "8c81fd20-8560-11f0-b250-317271f94fc1", "dir": "e" } ]
 		},
 		{
-			"identifier": "Level_1",
+			"identifier": "House_N",
 			"iid": "c72a9460-8560-11f0-b250-6dc4faa06eb6",
 			"uid": 37,
 			"worldX": 240,
@@ -2924,7 +2924,7 @@
 			"pxHei": 144,
 			"__bgColor": "#696A79",
 			"bgColor": null,
-			"useAutoIdentifier": true,
+			"useAutoIdentifier": false,
 			"bgRelPath": null,
 			"bgPos": null,
 			"bgPivotX": 0.5,
@@ -3362,7 +3362,7 @@
 			"__neighbours": [{ "levelIid": "d4125f90-8560-11f0-b109-375c5575a611", "dir": "s" }]
 		},
 		{
-			"identifier": "Level_2",
+			"identifier": "House_E",
 			"iid": "8c81fd20-8560-11f0-b250-317271f94fc1",
 			"uid": 38,
 			"worldX": 592,
@@ -3372,7 +3372,7 @@
 			"pxHei": 144,
 			"__bgColor": "#696A79",
 			"bgColor": null,
-			"useAutoIdentifier": true,
+			"useAutoIdentifier": false,
 			"bgRelPath": null,
 			"bgPos": null,
 			"bgPivotX": 0.5,

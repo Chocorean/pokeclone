@@ -22,6 +22,7 @@ use crate::dex::DexPlugin;
 use crate::event::EventsPlugin;
 use crate::fight::FightPlugin;
 use crate::player::PlayerPlugin;
+use crate::save::SavePlugin;
 use crate::ui::UiPlugin;
 use crate::utils::MovementPlugin;
 use crate::world::WorldPlugin;
@@ -32,8 +33,6 @@ pub enum AppState {
     /// `MainMenu` is the initial state, when the main menu UI is displayed.
     #[default]
     MainMenu,
-    /// `ResumeGame` is a preliminary state to `InGame`. It loads the save before running the game.
-    ResumeGame,
     /// `InGame` is the state when we can play. The world, team and actions UIs are displayed.
     InGame,
     /// `InFight` is when a battle occurs. The world is hidden, the fight is displayed instead, and the actions UI is updated.
@@ -60,6 +59,7 @@ fn main() {
     app.add_plugins((
         LdtkPlugin,
         GifPlugin,
+        SavePlugin,
         EventsPlugin,
         WorldPlugin,
         UiPlugin,
@@ -89,5 +89,5 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         },
         // AudioPlayer::new(asset_server.load("sfx/town.flac")),
     ));
-    commands.insert_resource(LevelSelection::index(0));
+    commands.insert_resource(LevelSelection::Identifier("Village".to_string()));
 }
