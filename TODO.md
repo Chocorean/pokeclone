@@ -5,10 +5,8 @@
 ## Issues
 
 - [Code] Leaving and re-entering the game messes up the game
-- [Code] Add offset to player when new game
 - [Code] Fight starts before the player is done moving
 - [Code/LDTK] game crashes when starting a fight with an empty team. (which makes sense right now).
-- [Code] Cant save in other level than Village
 
 ## TODO
 
@@ -16,12 +14,14 @@
 - [Code] Too Much Logic in UI Widgets
 - [Code] Associate attacks with creatures on creation, not dynamically during fights. ??
 - [Code] Fight (big)
-- [Art] Animate all creatures sprites
+- [Art] Animate all creatures sprites ??
 - [Code] First creature moment when starting new save !
 
 
 ## Done
 
+- [Code] Add offset to player when new game
+- [Code] Cant save in other level than Village
 - [Code] Clamp camera
 - [Code] Cannot change level
 - [Code] add a Y offset to the player sprite

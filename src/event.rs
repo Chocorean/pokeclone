@@ -1,5 +1,8 @@
 use bevy::prelude::*;
-use bevy_ecs_ldtk::{GridCoords, LevelSelection};
+use bevy_ecs_ldtk::{
+    GridCoords, LdtkProjectHandle, LevelSelection,
+    assets::{LdtkProject, LevelMetadataAccessor},
+};
 
 use crate::{
     AppState,
@@ -34,12 +37,19 @@ pub struct NewSaveEvent;
 pub fn new_save(
     mut events: EventReader<NewSaveEvent>,
     player_q: Query<&GridCoords, With<Player>>,
-    level_res: Res<LevelSelection>,
+    level_selection: Res<LevelSelection>,
     team: Res<Team>,
+    ldtk_projects: Single<&LdtkProjectHandle>,
+    ldtk_project_assets: Res<Assets<LdtkProject>>,
 ) {
     for _ in events.read() {
-        let level_id = match level_res.clone() {
+        let level_id = match level_selection.clone() {
             LevelSelection::Identifier(x) => x,
+            LevelSelection::Iid(iid) => {
+                let ldtk_project = ldtk_project_assets.get(*ldtk_projects).unwrap();
+                let level = ldtk_project.get_raw_level_by_iid(iid.get()).unwrap();
+                level.identifier.clone()
+            }
             _ => todo!("not supported"),
         };
         let coords = player_q.single().unwrap();
