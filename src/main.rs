@@ -14,9 +14,7 @@ use bevy::prelude::*;
 use bevy::state::state::States;
 use bevy::window::WindowResolution;
 use bevy_easy_gif::GifPlugin;
-use bevy_ecs_ldtk::{
-    LdtkPlugin, LdtkSettings, LdtkWorldBundle, LevelSelection, LevelSpawnBehavior,
-};
+use bevy_ecs_ldtk::{LdtkPlugin, LdtkWorldBundle, LevelSelection};
 
 use crate::animation::AnimationsPlugin;
 use crate::camera::{CamPlugin, WorldBundle};
@@ -52,7 +50,7 @@ fn main() {
             .set(WindowPlugin {
                 primary_window: Some(Window {
                     title: "Pokeclone".to_string(),
-                    resizable: true,
+                    resizable: false,
                     resolution: WindowResolution::new(1000.0, 600.0),
                     ..default()
                 }),

@@ -9,7 +9,7 @@ pub fn cache_herb_locations(
     mut ev_levels: EventReader<LevelEvent>,
 ) {
     for ev in ev_levels.read() {
-        if matches!(ev, LevelEvent::Spawned(_)) {
+        if !matches!(ev, LevelEvent::Spawned(_)) {
             // We only load one level at a time so we can exit
             return;
         }

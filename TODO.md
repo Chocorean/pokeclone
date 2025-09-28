@@ -2,15 +2,15 @@
 
 ## Working on
 
-
 ## Issues
 
 - [Code] Leaving and re-entering the game messes up the game
+- [Code] Fight starts before the player is done moving
 - [Code/LDTK] game crashes when starting a fight with an empty team. (which makes sense right now).
 
 ## TODO
 
-- [Code] Clamp camera
+- [Code] Animate MovingNPCs
 - [Code] Too Much Logic in UI Widgets
 - [Code] Associate attacks with creatures on creation, not dynamically during fights. ??
 - [Code] Fight (big)
@@ -20,6 +20,7 @@
 
 ## Done
 
+- [Code] Clamp camera
 - [Code] Cannot change level
 - [Code] add a Y offset to the player sprite
 - [LDTK] Update layers zindex so the player shows correctly
