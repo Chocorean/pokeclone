@@ -13,6 +13,12 @@ pub struct SavePlugin;
 
 impl Plugin for SavePlugin {
     fn build(&self, app: &mut bevy::app::App) {
-        app.add_systems(OnEnter(AppState::InGame), apply_save);
+        app.add_systems(
+            OnTransition {
+                exited: AppState::MainMenu,
+                entered: AppState::InGame,
+            },
+            apply_save,
+        );
     }
 }
