@@ -149,6 +149,7 @@ pub fn camera_follow_player(
     // just center on player
     if current_level_height < CAMERA_HEIGHT || current_level_width < CAMERA_WIDTH {
         cam_transform.translation = player_coords.translation;
+        return;
     }
 
     let half_window_width = CAMERA_WIDTH / 2.0;
