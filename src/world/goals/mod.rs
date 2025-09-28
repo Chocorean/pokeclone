@@ -21,7 +21,12 @@ impl Plugin for GoalsPlugin {
             .register_ldtk_entity::<GoalBundle>("Goal")
             .add_systems(
                 Update,
-                (handle_through_goal, cache_goal_locations).run_if(in_state(AppState::InGame)),
+                (
+                    handle_through_goal,
+                    cache_goal_locations,
+                    handle_waiting_teleport,
+                )
+                    .run_if(in_state(AppState::InGame)),
             );
     }
 }

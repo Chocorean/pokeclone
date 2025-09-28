@@ -14,7 +14,9 @@ use bevy::prelude::*;
 use bevy::state::state::States;
 use bevy::window::WindowResolution;
 use bevy_easy_gif::GifPlugin;
-use bevy_ecs_ldtk::{LdtkPlugin, LdtkWorldBundle, LevelSelection};
+use bevy_ecs_ldtk::{
+    LdtkPlugin, LdtkSettings, LdtkWorldBundle, LevelSelection, LevelSpawnBehavior,
+};
 
 use crate::animation::AnimationsPlugin;
 use crate::camera::{CamPlugin, WorldBundle};

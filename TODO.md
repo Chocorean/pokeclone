@@ -1,25 +1,27 @@
 # Issues tracker
 
+## Working on
+
+
 ## Issues
 
-- Despawn player entity properly when exiting the game (still relevant?)
-- Need another set of States when InGame: walk, animation, fight, etc, need to be thought out precisely
-- game crashes when starting a fight with an empty team. (which makes sense right now).
+- [Code] Leaving and re-entering the game messes up the game
+- [Code/LDTK] game crashes when starting a fight with an empty team. (which makes sense right now).
 
 ## TODO
 
-- [Code] add a Y offset to the player sprite to
+- [Code] Clamp camera
 - [Code] Too Much Logic in UI Widgets
-- [Code] Style Ui widgets.
-- [Code] Associate attacks with creatures on creation, not dynamically during fights.
+- [Code] Associate attacks with creatures on creation, not dynamically during fights. ??
 - [Code] Fight (big)
 - [Art] Animate all creatures sprites
-- [Code/Bug] Cannot change level since neighbors not loaded yet
-- [Code] Leaving and re-entering the game messes up the sprite of the player.
+- [Code] First creature moment when starting new save !
 
 
 ## Done
 
+- [Code] Cannot change level
+- [Code] add a Y offset to the player sprite
 - [LDTK] Update layers zindex so the player shows correctly
 - [Code] Keep moving player when key stays pressed
 - [Code] Player teleports on map instead of moving

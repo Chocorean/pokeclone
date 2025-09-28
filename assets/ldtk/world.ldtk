@@ -527,7 +527,7 @@
 			"pivotY": 0,
 			"fieldDefs": [
 				{
-					"identifier": "Entity_ref",
+					"identifier": "destination",
 					"doc": null,
 					"__type": "EntityRef",
 					"uid": 41,
@@ -564,7 +564,7 @@
 					"tilesetUid": null
 				},
 				{
-					"identifier": "Direction",
+					"identifier": "direction",
 					"doc": null,
 					"__type": "LocalEnum.Direction",
 					"uid": 44,
@@ -1197,7 +1197,7 @@
 							"defUid": 29,
 							"px": [272,80],
 							"fieldInstances": [
-								{ "__identifier": "Entity_ref", "__type": "EntityRef", "__value": {
+								{ "__identifier": "destination", "__type": "EntityRef", "__value": {
 									"entityIid": "bd24b3f0-8560-11f0-b250-29c5f7d9a713",
 									"layerIid": "8c81fd23-8560-11f0-b250-193aab7361d6",
 									"levelIid": "8c81fd20-8560-11f0-b250-317271f94fc1",
@@ -1206,7 +1206,7 @@
 									"id": "V_String",
 									"params": ["bd24b3f0-8560-11f0-b250-29c5f7d9a713"]
 								}] },
-								{ "__identifier": "Direction", "__type": "LocalEnum.Direction", "__value": "North", "__tile": null, "defUid": 44, "realEditorValues": [{
+								{ "__identifier": "direction", "__type": "LocalEnum.Direction", "__value": "North", "__tile": null, "defUid": 44, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["North"]
 								}] }
@@ -1227,7 +1227,7 @@
 							"defUid": 29,
 							"px": [192,160],
 							"fieldInstances": [
-								{ "__identifier": "Entity_ref", "__type": "EntityRef", "__value": {
+								{ "__identifier": "destination", "__type": "EntityRef", "__value": {
 									"entityIid": "403e68d0-8560-11f0-b250-63916a6bbbc7",
 									"layerIid": "c72abb72-8560-11f0-b250-3b123198667d",
 									"levelIid": "c72a9460-8560-11f0-b250-6dc4faa06eb6",
@@ -1236,7 +1236,7 @@
 									"id": "V_String",
 									"params": ["403e68d0-8560-11f0-b250-63916a6bbbc7"]
 								}] },
-								{ "__identifier": "Direction", "__type": "LocalEnum.Direction", "__value": "North", "__tile": null, "defUid": 44, "realEditorValues": [{
+								{ "__identifier": "direction", "__type": "LocalEnum.Direction", "__value": "North", "__tile": null, "defUid": 44, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["North"]
 								}] }
@@ -2996,7 +2996,7 @@
 							"defUid": 29,
 							"px": [48,128],
 							"fieldInstances": [
-								{ "__identifier": "Entity_ref", "__type": "EntityRef", "__value": {
+								{ "__identifier": "destination", "__type": "EntityRef", "__value": {
 									"entityIid": "0f87eaa0-8560-11f0-b250-b7bf7c3bff78",
 									"layerIid": "abb693c0-8560-11f0-b109-f528bdc29c8a",
 									"levelIid": "d4125f90-8560-11f0-b109-375c5575a611",
@@ -3005,7 +3005,7 @@
 									"id": "V_String",
 									"params": ["0f87eaa0-8560-11f0-b250-b7bf7c3bff78"]
 								}] },
-								{ "__identifier": "Direction", "__type": "LocalEnum.Direction", "__value": "South", "__tile": null, "defUid": 44, "realEditorValues": [{
+								{ "__identifier": "direction", "__type": "LocalEnum.Direction", "__value": "South", "__tile": null, "defUid": 44, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["South"]
 								}] }
@@ -3026,7 +3026,7 @@
 							"defUid": 29,
 							"px": [64,128],
 							"fieldInstances": [
-								{ "__identifier": "Entity_ref", "__type": "EntityRef", "__value": {
+								{ "__identifier": "destination", "__type": "EntityRef", "__value": {
 									"entityIid": "0f87eaa0-8560-11f0-b250-b7bf7c3bff78",
 									"layerIid": "abb693c0-8560-11f0-b109-f528bdc29c8a",
 									"levelIid": "d4125f90-8560-11f0-b109-375c5575a611",
@@ -3035,7 +3035,7 @@
 									"id": "V_String",
 									"params": ["0f87eaa0-8560-11f0-b250-b7bf7c3bff78"]
 								}] },
-								{ "__identifier": "Direction", "__type": "LocalEnum.Direction", "__value": "South", "__tile": null, "defUid": 44, "realEditorValues": [{
+								{ "__identifier": "direction", "__type": "LocalEnum.Direction", "__value": "South", "__tile": null, "defUid": 44, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["South"]
 								}] }
@@ -3266,7 +3266,7 @@
 					"__cWid": 8,
 					"__cHei": 9,
 					"__gridSize": 16,
-					"__opacity": 0.1,
+					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
@@ -3343,14 +3343,14 @@
 						0,
 						0,
 						0,
+						1,
+						1,
+						1,
 						0,
 						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0
+						1,
+						1,
+						1
 					],
 					"autoLayerTiles": [],
 					"seed": 4816885,
@@ -3444,7 +3444,7 @@
 							"defUid": 29,
 							"px": [64,128],
 							"fieldInstances": [
-								{ "__identifier": "Entity_ref", "__type": "EntityRef", "__value": {
+								{ "__identifier": "destination", "__type": "EntityRef", "__value": {
 									"entityIid": "0f0b67a0-8560-11f0-b250-8b1c8de6c431",
 									"layerIid": "abb693c0-8560-11f0-b109-f528bdc29c8a",
 									"levelIid": "d4125f90-8560-11f0-b109-375c5575a611",
@@ -3453,7 +3453,7 @@
 									"id": "V_String",
 									"params": ["0f0b67a0-8560-11f0-b250-8b1c8de6c431"]
 								}] },
-								{ "__identifier": "Direction", "__type": "LocalEnum.Direction", "__value": "South", "__tile": null, "defUid": 44, "realEditorValues": [{
+								{ "__identifier": "direction", "__type": "LocalEnum.Direction", "__value": "South", "__tile": null, "defUid": 44, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["South"]
 								}] }
@@ -3474,7 +3474,7 @@
 							"defUid": 29,
 							"px": [48,128],
 							"fieldInstances": [
-								{ "__identifier": "Entity_ref", "__type": "EntityRef", "__value": {
+								{ "__identifier": "destination", "__type": "EntityRef", "__value": {
 									"entityIid": "0f0b67a0-8560-11f0-b250-8b1c8de6c431",
 									"layerIid": "abb693c0-8560-11f0-b109-f528bdc29c8a",
 									"levelIid": "d4125f90-8560-11f0-b109-375c5575a611",
@@ -3483,7 +3483,7 @@
 									"id": "V_String",
 									"params": ["0f0b67a0-8560-11f0-b250-8b1c8de6c431"]
 								}] },
-								{ "__identifier": "Direction", "__type": "LocalEnum.Direction", "__value": "South", "__tile": null, "defUid": 44, "realEditorValues": [{
+								{ "__identifier": "direction", "__type": "LocalEnum.Direction", "__value": "South", "__tile": null, "defUid": 44, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["South"]
 								}] }
@@ -3714,7 +3714,7 @@
 					"__cWid": 8,
 					"__cHei": 9,
 					"__gridSize": 16,
-					"__opacity": 0.1,
+					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
@@ -3791,14 +3791,14 @@
 						0,
 						0,
 						0,
+						1,
+						1,
+						1,
 						0,
 						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0
+						1,
+						1,
+						1
 					],
 					"autoLayerTiles": [],
 					"seed": 1299861,
@@ -3961,7 +3961,7 @@
 					"__cWid": 6,
 					"__cHei": 6,
 					"__gridSize": 16,
-					"__opacity": 0.1,
+					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,

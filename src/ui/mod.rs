@@ -32,7 +32,6 @@ impl Plugin for UiPlugin {
             EguiPrimaryContextPass,
             add_custom_fonts.before(setup_game_ui),
         );
-        // app.add_systems(Update, load_custom_fonts);
     }
 }
 

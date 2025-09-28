@@ -1,6 +1,8 @@
 use bevy::{platform::collections::HashSet, prelude::*};
 use bevy_ecs_ldtk::{EntityInstance, GridCoords, LdtkEntity};
 
+use crate::utils::Direction;
+
 // level 0 Goal
 // f634c0c0-5e50-11f0-a81f-7d5d71ee8bd5
 // level 1 goal
@@ -24,3 +26,12 @@ pub struct GoalBundle {
 pub struct LevelGoals {
     pub goal_locations: HashSet<GridCoords>,
 }
+
+/// Insert in an Entity to be teleported.
+///
+/// The [String] refers to the destination [Goal] entity_iid.
+///
+/// The [Direction] will determine the relative landing position
+/// (position of the [Goal] entity + 1 in the given direction)
+#[derive(Component)]
+pub struct WaitingTeleport(pub Direction, pub String);

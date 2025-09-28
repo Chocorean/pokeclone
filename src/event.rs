@@ -31,7 +31,7 @@ impl Plugin for EventsPlugin {
 pub struct NewSaveEvent;
 
 /// Gather what matters and save it all.
-/// Might be a better way to do so, is that Events ? <-- TODO investigate
+/// TODO maybe use observers with On<> ?
 pub fn new_save(
     mut events: EventReader<NewSaveEvent>,
     player_q: Query<&GridCoords, With<Player>>,
