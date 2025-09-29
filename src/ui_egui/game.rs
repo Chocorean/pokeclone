@@ -13,7 +13,7 @@ use crate::{
     event::NewSaveEvent,
     fight::FightState,
     team::Team,
-    ui::{index::dex_list_ui, widgets::MenuButton},
+    ui_egui::{index::dex_list_ui, widgets::MenuButton},
 };
 
 /// Build the whole game UI
@@ -30,7 +30,6 @@ pub fn setup_game_ui(
     fight_state: Res<State<FightState>>,
     dex: Res<Dex>,
     mut enable_index: Local<bool>,
-    // let mut attack_choice: Option<Arc<dyn Attack + Send + Sync>> = None;
     mut attack_choice: Local<Option<Arc<dyn Attack + Send + Sync>>>,
 ) -> Result {
     // textures

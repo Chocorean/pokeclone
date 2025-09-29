@@ -9,13 +9,13 @@ use crate::{
 };
 
 #[derive(Component)]
-pub struct MainMenuUi;
+pub struct OptionsUi;
 
-pub(crate) fn setup_main_menu_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub(crate) fn setup_options_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/mmc.otf");
     commands
         .spawn((
-            MainMenuUi,
+            OptionsUi,
             Node {
                 width: Val::Percent(100.),
                 height: Val::Percent(100.),
@@ -36,38 +36,22 @@ pub(crate) fn setup_main_menu_ui(mut commands: Commands, asset_server: Res<Asset
                 row_gap: Val::Px(12.0),
                 ..default()
             })
-            .with_children(|root| {
-                root.spawn((
-                    Text::new("PokeClone"),
+            .with_children(|parent| {
+                parent.spawn((
+                    Text("Options".to_string()),
                     TextFont {
                         font: font.clone(),
-                        font_size: 40.,
                         ..default()
                     },
                 ));
-                root.spawn(hyperlink(
-                    "Source code",
-                    "https://github.com/Chocorean/pokeclone",
-                    font.clone(),
-                ));
-                root.spawn(h_sep());
-
-                // buttons
-                if Save::exists() {
-                    root.spawn(button("Resume Game", font.clone()))
-                        .insert(ResumeGameButton);
-                }
-                root.spawn(button("New Game", font.clone()))
-                    .insert(NewGameButton);
-                root.spawn(button("Options", font.clone()))
-                    .insert(OptionsButton);
+                parent.spawn(button("Return", font)).insert(ReturnButton);
             });
         });
 }
 
-pub(crate) fn despawn_main_menu_ui(
+pub(crate) fn despawn_options_ui(
     mut commands: Commands,
-    entity: Single<Entity, With<MainMenuUi>>,
+    entity: Single<Entity, With<ReturnButton>>,
 ) {
     commands.entity(*entity).despawn();
 }

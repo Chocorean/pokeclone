@@ -7,6 +7,7 @@ mod player;
 mod save;
 mod team;
 mod ui;
+// mod ui_egui;
 mod utils;
 mod world;
 
@@ -71,10 +72,6 @@ fn main() {
         FightPlugin,
     ));
     app.init_state::<AppState>();
-
-    if cfg!(debug_assertions) {
-        app.add_plugins(bevy_inspector_egui::quick::WorldInspectorPlugin::new());
-    }
     app.add_systems(Startup, setup);
 
     app.run();

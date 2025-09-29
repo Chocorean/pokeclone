@@ -10,9 +10,9 @@ use bevy_ecs_ldtk::{
     LdtkProjectHandle, LevelIid,
     assets::{LdtkProject, LevelMetadataAccessor},
 };
-use bevy_egui::EguiUserTextures;
+// use bevy_egui::EguiUserTextures;
 
-use crate::{AppState, player::Player};
+use crate::{AppState, player::Player, world::GridSize};
 
 const CAMERA_WIDTH: f32 = 800.;
 const CAMERA_HEIGHT: f32 = 600.;
@@ -32,9 +32,7 @@ impl Plugin for CamPlugin {
             )
             .add_systems(
                 Update,
-                camera_follow_player
-                    // .run_if(in_state(AppState::InGame)), TODO Check si on peut remplacer ca
-                    .run_if(in_state(AppState::InFight).or(in_state(AppState::InGame))),
+                camera_follow_player.run_if(in_state(AppState::InGame)),
             );
     }
 }
@@ -66,11 +64,7 @@ pub struct WorldTexture(pub Handle<Image>);
 pub struct WorldCamera;
 
 /// Initialize the world camera, which displays the actual game.
-pub fn setup_world_camera(
-    mut commands: Commands,
-    mut images: ResMut<Assets<Image>>,
-    mut egui_user_textures: ResMut<EguiUserTextures>,
-) {
+pub fn setup_world_camera(mut commands: Commands, mut images: ResMut<Assets<Image>>) {
     // --- create render texture ---
     let size = Extent3d {
         width: CAMERA_WIDTH as u32,
@@ -95,7 +89,6 @@ pub fn setup_world_camera(
     image.resize(size);
 
     let image_handle = images.add(image);
-    egui_user_textures.add_image(image_handle.clone());
 
     commands.spawn((
         Camera2d,
@@ -140,7 +133,9 @@ pub fn camera_follow_player(
 
     // if map is smaller than camera view (i.e inside building),
     // just center on player
-    if current_level_height < CAMERA_HEIGHT || current_level_width < CAMERA_WIDTH {
+    if current_level_height < CAMERA_HEIGHT * CAMERA_SCALE
+        || current_level_width < CAMERA_WIDTH * CAMERA_SCALE
+    {
         cam_transform.translation = player_coords.translation;
         return;
     }
