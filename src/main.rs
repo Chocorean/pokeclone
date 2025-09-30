@@ -51,7 +51,7 @@ fn main() {
                 primary_window: Some(Window {
                     title: "Pokeclone".to_string(),
                     resizable: false,
-                    resolution: WindowResolution::new(1000.0, 600.0),
+                    resolution: WindowResolution::new(1000.0, 700.0),
                     ..default()
                 }),
                 ..default()

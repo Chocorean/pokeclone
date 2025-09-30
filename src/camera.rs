@@ -10,9 +10,8 @@ use bevy_ecs_ldtk::{
     LdtkProjectHandle, LevelIid,
     assets::{LdtkProject, LevelMetadataAccessor},
 };
-// use bevy_egui::EguiUserTextures;
 
-use crate::{AppState, player::Player, world::GridSize};
+use crate::{AppState, player::Player};
 
 const CAMERA_WIDTH: f32 = 800.;
 const CAMERA_HEIGHT: f32 = 600.;
