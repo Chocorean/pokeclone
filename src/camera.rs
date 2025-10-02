@@ -11,7 +11,7 @@ use bevy_ecs_ldtk::{
     assets::{LdtkProject, LevelMetadataAccessor},
 };
 
-use crate::{AppState, player::Player};
+use crate::{AppState, player::Player, ui::setup_game_ui};
 
 const CAMERA_WIDTH: f32 = 800.;
 const CAMERA_HEIGHT: f32 = 600.;
@@ -27,7 +27,7 @@ impl Plugin for CamPlugin {
                     exited: AppState::MainMenu,
                     entered: AppState::InGame,
                 },
-                setup_world_camera,
+                setup_world_camera.before(setup_game_ui),
             )
             .add_systems(
                 Update,
@@ -45,7 +45,6 @@ pub fn setup_main_camera(mut commands: Commands) {
     commands.spawn((
         Camera2d,
         Projection::Orthographic(OrthographicProjection {
-            scaling_mode: bevy::render::camera::ScalingMode::WindowSize,
             ..OrthographicProjection::default_2d()
         }),
         MainCamera,

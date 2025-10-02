@@ -57,11 +57,6 @@ fn init_team(mut commands: Commands) {
 }
 
 /// Despawn the world and its camera.
-fn clean_up_world(
-    mut commands: Commands,
-    // world_q: Single<Entity, With<WorldBundle>>,
-    cam_q: Single<Entity, With<WorldCamera>>,
-) {
-    // commands.entity(*world_q).despawn();
+fn clean_up_world(mut commands: Commands, cam_q: Single<Entity, With<WorldCamera>>) {
     commands.entity(*cam_q).despawn();
 }

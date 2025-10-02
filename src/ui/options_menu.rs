@@ -1,12 +1,18 @@
 use bevy::prelude::*;
 
-use crate::{
-    save::Save,
-    ui::{
-        buttons::*,
-        utils::{button, h_sep, hyperlink},
-    },
-};
+use crate::{AppState, ui::widgets::*};
+
+#[derive(Component)]
+pub struct ReturnButton;
+
+pub fn handle_return_button(
+    button: Single<&Interaction, (Changed<Interaction>, With<ReturnButton>)>,
+    mut next_state: ResMut<NextState<AppState>>,
+) {
+    if matches!(*button, Interaction::Pressed) {
+        next_state.set(AppState::MainMenu);
+    }
+}
 
 #[derive(Component)]
 pub struct OptionsUi;

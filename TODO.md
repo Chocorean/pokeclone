@@ -4,12 +4,12 @@
 
 ## Issues
 
-- [Code] Leaving and re-entering the game messes up the game
 - [Code] Fight starts before the player is done moving
-- [Code/LDTK] game crashes when starting a fight with an empty team. (which makes sense right now).
 
 ## TODO
 
+- [UI] Fix assets in wasm
+- [Web] Add controllers on web?
 - [Code] Animate MovingNPCs
 - [Code] Too Much Logic in UI Widgets
 - [Code] Associate attacks with creatures on creation, not dynamically during fights. ??
@@ -20,6 +20,8 @@
 
 ## Done
 
+- [Code/LDTK] game crashes when starting a fight with an empty team. (not possible anymore)
+- [Code] Leaving and re-entering the game messes up the game
 - [Code] Add offset to player when new game
 - [Code] Cant save in other level than Village
 - [Code] Clamp camera

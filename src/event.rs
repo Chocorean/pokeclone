@@ -23,7 +23,8 @@ impl Plugin for EventsPlugin {
             .add_event::<WildEncounterEvent>()
             .add_systems(
                 Update,
-                (new_save, spawn_wild_encounter, wild_encounter).run_if(in_state(AppState::InGame)),
+                (on_new_save, spawn_wild_encounter, wild_encounter)
+                    .run_if(in_state(AppState::InGame)),
             );
     }
 }
@@ -34,7 +35,7 @@ pub struct NewSaveEvent;
 
 /// Gather what matters and save it all.
 /// TODO maybe use observers with On<> ?
-pub fn new_save(
+fn on_new_save(
     mut events: EventReader<NewSaveEvent>,
     player_q: Query<&GridCoords, With<Player>>,
     level_selection: Res<LevelSelection>,
@@ -57,7 +58,7 @@ pub fn new_save(
     }
 }
 
-// "Wild encounter"-related events
+// "Wild encounter"-related Events
 
 #[derive(Event)]
 /// Trigger each time the player changes direction or moves into a bush.
@@ -70,7 +71,6 @@ fn spawn_wild_encounter(
     dex: Res<Dex>,
 ) {
     for _ in move_in_bush_reader.read() {
-        info!("herb event");
         let mut rng = rand::rng();
         let nbr = rand::Rng::random::<u8>(&mut rng);
         info!(nbr);

@@ -11,17 +11,15 @@ use crate::{
 
 /// Called by the UI after 'New Game' was pressed
 ///
-/// initialize the team with one random creature
+/// initialize the team with a few random creatures
 pub fn new_save(mut commands: Commands, dex: Res<Dex>) {
-    let save = Save::default_with_team(1, dex);
+    let save = Save::default_with_team(3, dex);
     commands.insert_resource(LevelSelection::Identifier(save.level.clone()));
     commands.insert_resource(save);
 }
 
 /// Called by the UI after 'Resume' was pressed
 pub fn load_save(mut commands: Commands) {
-    // commands.insert_resource(save.team.clone()); // TODO should be moved elsewhere but it crashes the game
-
     let save = if Save::exists() {
         Save::load().unwrap()
     } else {
@@ -45,7 +43,8 @@ pub fn apply_save(
     transform.translation = grid_coords_to_translation(*player_coords, IVec2::splat(grid_size.0))
         .extend(transform.translation.z);
     transform.translation.y += Y_CHAR_OFFSET;
-    commands.entity(entity).insert(UpdatePosAfterSave); // Do this for every entity that the save moves.
+    commands.entity(entity).insert(UpdatePosAfterSave); // Do this for every entity that the save moves, not Player only
+    // Think NPCs, obstacles, etc
     // team
     commands.insert_resource(save.team.clone());
     // remove save

@@ -67,6 +67,7 @@ impl Dex {
             {
                 let creature = Creature::from_value(cr, species_list.len(), &species.stats);
                 let handle: Handle<GifAsset> = asset_server.load(creature.assets_texture_path());
+                dbg!(handle.clone());
                 creatures.push((creature, handle));
             }
             species.individuals = creatures;

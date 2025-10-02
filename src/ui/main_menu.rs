@@ -1,12 +1,52 @@
 use bevy::prelude::*;
 
 use crate::{
-    save::Save,
-    ui::{
-        buttons::*,
-        utils::{button, h_sep, hyperlink},
-    },
+    AppState,
+    dex::Dex,
+    save::{Save, load_save, new_save},
+    ui::widgets::*,
 };
+
+#[derive(Component)]
+pub struct ResumeGameButton;
+
+#[derive(Component)]
+pub struct NewGameButton;
+
+#[derive(Component)]
+pub struct OptionsButton;
+
+pub fn handle_resume_game_button(
+    commands: Commands,
+    mut next_state: ResMut<NextState<AppState>>,
+    button: Single<&Interaction, (Changed<Interaction>, With<ResumeGameButton>)>,
+) {
+    if matches!(*button, Interaction::Pressed) {
+        load_save(commands);
+        next_state.set(AppState::InGame);
+    }
+}
+
+pub fn handle_new_game_button(
+    commands: Commands,
+    mut next_state: ResMut<NextState<AppState>>,
+    dex: Res<Dex>,
+    button: Single<&Interaction, (Changed<Interaction>, With<NewGameButton>)>,
+) {
+    if matches!(*button, Interaction::Pressed) {
+        new_save(commands, dex);
+        next_state.set(AppState::InGame);
+    }
+}
+
+pub fn handle_options_button(
+    button: Single<&Interaction, (Changed<Interaction>, With<OptionsButton>)>,
+    mut next_state: ResMut<NextState<AppState>>,
+) {
+    if matches!(*button, Interaction::Pressed) {
+        next_state.set(AppState::OptionsMenu);
+    }
+}
 
 #[derive(Component)]
 pub struct MainMenuUi;

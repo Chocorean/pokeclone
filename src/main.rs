@@ -38,6 +38,8 @@ pub enum AppState {
     InGame,
     /// `InFight` is when a battle occurs. The world is hidden, the fight is displayed instead, and the actions UI is updated.
     InFight,
+    /// Show the index UI
+    Index,
     /// `OptionsMenu` is the state when the options UI is displayed.
     OptionsMenu,
 }
@@ -51,7 +53,7 @@ fn main() {
                 primary_window: Some(Window {
                     title: "Pokeclone".to_string(),
                     resizable: false,
-                    resolution: WindowResolution::new(1000.0, 700.0),
+                    resolution: WindowResolution::new(1000., 700.),
                     ..default()
                 }),
                 ..default()

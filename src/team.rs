@@ -1,4 +1,8 @@
-use bevy::ecs::{resource::Resource, system::Res};
+use bevy::{
+    asset::Handle,
+    ecs::{resource::Resource, system::Res},
+};
+use bevy_easy_gif::GifAsset;
 use serde::{Deserialize, Serialize};
 
 use crate::dex::Dex;
@@ -45,12 +49,12 @@ impl TeamMember {
             .unwrap_or(dex.get_creature(self.creature_id).0.name.clone())
     }
 
-    pub fn texture_path(&self, dex: &Dex) -> String {
-        dex.get_creature(self.creature_id).0.assets_texture_path()
-    }
-
     pub fn max_hp(&self, dex: &Dex) -> u8 {
         dex.get_creature(self.creature_id).0.stats.hp
+    }
+
+    pub fn handle(&self, dex: &Dex) -> Handle<GifAsset> {
+        dex.get_creature(self.creature_id).1.clone()
     }
 
     // todo base stat + actual stats (from combat)
