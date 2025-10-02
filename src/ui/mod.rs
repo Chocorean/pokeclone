@@ -44,6 +44,10 @@ impl Plugin for UiPlugin {
             .add_systems(OnExit(AppState::InFight), despawn_fight_ui)
             .add_systems(
                 Update,
+                handle_fight_input.run_if(in_state(AppState::InFight)),
+            )
+            .add_systems(
+                Update,
                 (handle_game_ui_input.run_if(in_state(AppState::InGame)),),
             )
             .add_systems(Update, (handle_hyperlinks, handle_buttons))

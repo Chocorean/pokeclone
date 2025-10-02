@@ -13,7 +13,6 @@ pub(crate) use walls::LevelWalls;
 use crate::{
     AppState,
     camera::WorldCamera,
-    team::Team,
     world::{
         goals::GoalsPlugin, herbs::HerbsPlugin, npcs::NPCsPlugin, signs::SignsPlugin,
         walls::WallsPlugin,
@@ -33,14 +32,6 @@ impl Plugin for WorldPlugin {
             .add_plugins(SignsPlugin)
             .add_plugins(WallsPlugin)
             .add_systems(
-                OnTransition {
-                    // `init_team` loads an empty team, so it shall only be called when starting a new game.
-                    exited: AppState::MainMenu,
-                    entered: AppState::InGame,
-                },
-                init_team,
-            )
-            .add_systems(
                 // When we leave the game
                 // It's not an OnExit because we might leave this state when entering in combat or something
                 OnTransition {
@@ -50,10 +41,6 @@ impl Plugin for WorldPlugin {
                 clean_up_world,
             );
     }
-}
-
-fn init_team(mut commands: Commands) {
-    commands.insert_resource(Team::new());
 }
 
 /// Despawn the world and its camera.

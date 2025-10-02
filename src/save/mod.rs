@@ -5,7 +5,7 @@ use bevy::prelude::*;
 pub(crate) use components::Save;
 pub use systems::*;
 
-use crate::AppState;
+use crate::{AppState, ui::setup_game_ui};
 
 const SAVE_PATH: &str = "assets/saves/save.json";
 
@@ -18,7 +18,7 @@ impl Plugin for SavePlugin {
                 exited: AppState::MainMenu,
                 entered: AppState::InGame,
             },
-            apply_save,
+            apply_save.before(setup_game_ui),
         );
     }
 }

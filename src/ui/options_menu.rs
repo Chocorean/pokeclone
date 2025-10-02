@@ -55,9 +55,6 @@ pub(crate) fn setup_options_ui(mut commands: Commands, asset_server: Res<AssetSe
         });
 }
 
-pub(crate) fn despawn_options_ui(
-    mut commands: Commands,
-    entity: Single<Entity, With<ReturnButton>>,
-) {
+pub(crate) fn despawn_options_ui(mut commands: Commands, entity: Single<Entity, With<OptionsUi>>) {
     commands.entity(*entity).despawn();
 }

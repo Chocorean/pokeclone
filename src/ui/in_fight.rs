@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::AppState;
+
 #[derive(Component)]
 pub struct FightUi;
 
@@ -20,4 +22,14 @@ pub(crate) fn setup_fight_ui(mut commands: Commands) {
 
 pub(crate) fn despawn_fight_ui(mut commands: Commands, entity: Single<Entity, With<FightUi>>) {
     commands.entity(*entity).despawn();
+}
+
+/// temporary, just to be able to escape the state
+pub(crate) fn handle_fight_input(
+    input: Res<ButtonInput<KeyCode>>,
+    mut next_state: ResMut<NextState<AppState>>,
+) {
+    if input.just_released(KeyCode::Escape) {
+        next_state.set(AppState::InGame);
+    }
 }

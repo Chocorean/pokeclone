@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::{
     AppState,
     dex::Dex,
-    save::{Save, load_save, new_save},
+    save::{Save, init_blank_save, load_save},
     ui::widgets::*,
 };
 
@@ -34,7 +34,7 @@ pub fn handle_new_game_button(
     button: Single<&Interaction, (Changed<Interaction>, With<NewGameButton>)>,
 ) {
     if matches!(*button, Interaction::Pressed) {
-        new_save(commands, dex);
+        init_blank_save(commands, dex);
         next_state.set(AppState::InGame);
     }
 }
