@@ -4,22 +4,30 @@
 
 ## Issues
 
-- [Code] Fight starts before the player is done moving
+- [Event] Fight starts before the player is done moving
+- [Camera] buggy when saving close to N/W/S borders, but E is fine somehow.
 
 ## TODO
 
-- [UI] Fix assets in wasm
-- [Web] Add controllers on web?
-- [Code] Animate MovingNPCs
-- [Code] Too Much Logic in UI Widgets
+- [Web] Add gamepad controllers (on web ?)
+- [Code] top bar
+- [Code] Show logs ?
+- [Code] Index: show random guy
+- [Code] Fight: 1 attack = ko
+- [Code] Tame is instant, and if team < 5, remove first guy, shift all, add new to last
+
+## Won't do
+
 - [Code] Associate attacks with creatures on creation, not dynamically during fights. ??
 - [Code] Fight (big)
 - [Art] Animate all creatures sprites ??
-- [Code] First creature moment when starting new save !
-
 
 ## Done
 
+- [UI] Fix assets in wasm
+- [Code] First creature moment when starting new save !
+- [Code] Too Much Logic in UI Widgets
+- [Code] Animate MovingNPCs
 - [Code/LDTK] game crashes when starting a fight with an empty team. (not possible anymore)
 - [Code] Leaving and re-entering the game messes up the game
 - [Code] Add offset to player when new game

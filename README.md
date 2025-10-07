@@ -6,6 +6,8 @@ The main objective was to finish something that looks like a game, pratice Rust 
 
 The UI and style are disgusting, the way fights work is horrible, but it sets the ground to build something fun nonetheless.
 
+I know there are still issues, but I'm super proud of what I have made so far and also very burnt out. I'll be moving on to some exciting new Bevy projects!
+
 ## Dependencies
 
 - Rust tool chain
