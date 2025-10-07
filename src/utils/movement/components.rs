@@ -12,7 +12,7 @@ use bevy_ecs_ldtk::GridCoords;
 #[derive(Component)]
 pub struct UpdatePosAfterSave;
 
-#[derive(Component)]
+#[derive(Component, Debug)]
 pub struct SmoothMove {
     pub start: GridCoords,
     pub end: GridCoords,

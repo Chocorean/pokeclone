@@ -10,7 +10,6 @@ pub fn cache_herb_locations(
 ) {
     for ev in ev_levels.read() {
         if let LevelEvent::Transformed(_) = ev {
-            dbg!("Caching herbs");
             level_walls.herb_locations = HashSet::new(); // reset
             for herb_coords in herbs.iter() {
                 level_walls.herb_locations.insert(*herb_coords);

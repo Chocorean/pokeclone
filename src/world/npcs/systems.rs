@@ -1,13 +1,13 @@
-use bevy::prelude::*;
-use bevy_ecs_ldtk::{EntityInstance, GridCoords};
+use bevy::{platform::collections::HashSet, prelude::*};
+use bevy_ecs_ldtk::{EntityInstance, GridCoords, LevelEvent};
 
 use crate::{
     player::Player,
     utils::{
-        Direction, Y_CHAR_OFFSET, read_dir_from_ldtk_entity, read_npc_kind_from_ldtk_entity,
-        read_str_from_ldtk_entity,
+        Direction, GC, SmoothMove, Y_CHAR_OFFSET, read_dir_from_ldtk_entity,
+        read_direction_from_ldtk_entity, read_npc_kind_from_ldtk_entity, read_str_from_ldtk_entity,
     },
-    world::npcs::components::{LevelNPCs, NPC, NPCKind},
+    world::npcs::components::{LevelNPCs, MovingNPCSchedule, NPC, NPCKind},
 };
 
 /// Handle for players interacting with NPC
@@ -31,13 +31,23 @@ pub fn handle_player_interaction_with_npc(
 }
 
 // Cache static NPCs locations.
+// todo update pos of moving npcs.
 pub fn cache_npc_locations(
     mut level_walls: ResMut<LevelNPCs>,
-    npcs: Query<(Entity, &GridCoords), Added<NPC>>,
-    // moving_npcs: Query<(Entity, &GridCoords), Changed<MovingNPC>>,
+    npcs: Query<(&GridCoords, Option<&SmoothMove>), With<NPC>>,
 ) {
-    for (npc, npc_coords) in npcs.iter() {
-        level_walls.npcs_locations.insert(npc.index(), *npc_coords);
+    level_walls.npcs_locations = HashSet::new();
+
+    for (npc_coords, sm) in npcs.iter() {
+        match sm {
+            None => {
+                level_walls.npcs_locations.insert(*npc_coords);
+            }
+            Some(sm) => {
+                level_walls.npcs_locations.insert(sm.start);
+                level_walls.npcs_locations.insert(sm.end);
+            }
+        };
     }
 }
 
@@ -71,5 +81,81 @@ pub fn add_sprite_to_npc(
         sprite.flip_x = direction == Direction::Right;
 
         transform.translation.y += Y_CHAR_OFFSET;
+    }
+}
+
+/// Run once when joining the world. The purpose of this system is to
+/// make moving NPCs easily findable, but inserting a "next destination" component.
+///
+/// Runs once per level load.
+pub(crate) fn init_moving_npcs(
+    mut level_events: EventReader<LevelEvent>,
+    mut commands: Commands,
+    npcs: Query<(Entity, &EntityInstance), With<NPC>>,
+) {
+    for level_event in level_events.read() {
+        if let LevelEvent::Transformed(_) = level_event {
+            for (entity, ldtk_entity) in npcs {
+                if let Some(path) = read_direction_from_ldtk_entity(ldtk_entity) {
+                    commands.entity(entity).insert(MovingNPCSchedule {
+                        next: (*path.last().unwrap()).next_step(*path.first().unwrap()),
+                        current: 0,
+                        path,
+                    });
+                }
+            }
+        }
+    }
+}
+
+/// Handle the movement of the NPCs, update direction and sprites
+pub(crate) fn update_moving_npc(
+    mut commands: Commands,
+    npcs: Query<
+        (
+            Entity,
+            &GridCoords,
+            &mut Sprite,
+            &mut MovingNPCSchedule,
+            Option<&SmoothMove>,
+        ),
+        With<MovingNPCSchedule>,
+    >,
+    player: Single<(Option<&SmoothMove>, &GridCoords), With<Player>>,
+) {
+    for (entity, &gc, mut sprite, mut schedule, smooth_move) in npcs {
+        if smooth_move.is_some() {
+            // we want to wait until an NPC has finished moving before updating it again
+            continue;
+        }
+        let copy = schedule.clone();
+        let dest = schedule.update();
+        // first we cancel the move if the player is in the way
+        let player_cells = if let Some(sm) = player.0 {
+            [sm.start, sm.end].to_vec()
+        } else {
+            [*player.1].to_vec()
+        };
+        if player_cells.contains(&dest) {
+            *schedule = copy;
+            continue;
+        }
+        // eventually, we move
+        let sm = SmoothMove::new(gc, dest);
+        commands.entity(entity).insert(sm);
+        // sprite
+        let dir = Direction::from_coords(gc, dest);
+        // not set already, fine
+        if sprite.texture_atlas.is_none() {
+            continue;
+        }
+        let mut atlas = sprite.texture_atlas.clone().unwrap();
+        match dir {
+            Direction::Up => atlas.index = 0,
+            Direction::Down => atlas.index = 1,
+            _ => atlas.index = 2,
+        }
+        sprite.texture_atlas = Some(atlas);
+        sprite.flip_x = matches!(dir, Direction::Right);
     }
 }

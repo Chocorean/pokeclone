@@ -26,6 +26,21 @@ impl Direction {
             Direction::Right => GridCoords::new(coords.x + 1, coords.y),
         }
     }
+
+    /// This assume `one` and `two` are on the same row, or column, in that order.
+    /// Then it returns the direction one would be facing if standing on `one`, looking at `two`
+    pub fn from_coords(one: GridCoords, two: GridCoords) -> Self {
+        let diff = two - one;
+        if diff.y == 0 && one.x < two.x {
+            Direction::Right
+        } else if diff.y == 0 {
+            Direction::Left
+        } else if diff.x == 0 && one.y < two.y {
+            Direction::Down
+        } else {
+            Direction::Up
+        }
+    }
 }
 
 impl From<String> for Direction {
