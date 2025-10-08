@@ -4,11 +4,10 @@
 
 ## Issues
 
-- [Event] Fight starts before the player is done moving
-- [Camera] buggy when saving close to N/W/S borders, but E is fine somehow.
 
 ## TODO
 
+- [Event] Fight starts before the player is done moving
 - [Web] Add gamepad controllers (on web ?)
 - [Code] top bar
 - [Code] Show logs ?
@@ -24,6 +23,7 @@
 
 ## Done
 
+- [Camera] buggy when saving close to N/W/S borders, but E is fine somehow.
 - [UI] Fix assets in wasm
 - [Code] First creature moment when starting new save !
 - [Code] Too Much Logic in UI Widgets
