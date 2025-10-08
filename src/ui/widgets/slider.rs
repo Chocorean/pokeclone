@@ -16,6 +16,7 @@ pub struct Slider {
 }
 
 #[derive(Component)]
+#[allow(dead_code)]
 pub struct SliderIndex(usize);
 
 #[derive(Component)]

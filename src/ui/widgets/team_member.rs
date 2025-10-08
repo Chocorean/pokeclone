@@ -1,13 +1,10 @@
 use bevy::prelude::*;
 use bevy_easy_gif::GifNode;
 
-use crate::{
-    dex::Dex,
-    team::TeamMember,
-    ui::widgets::{Slider, slider},
-};
+use crate::{dex::Dex, team::TeamMember, ui::widgets::slider};
 
 #[derive(Component)]
+#[allow(dead_code)]
 pub struct TeamMemberWidget(TeamMember);
 
 const BACKGROUND_COLOR: Color = Color::linear_rgb(0.32156863, 0.36078432, 0.51568628);

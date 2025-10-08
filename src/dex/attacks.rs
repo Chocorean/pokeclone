@@ -99,6 +99,7 @@ impl PhysicalAttack {
 
 /// Each creature gets a magical attack based on their element.
 #[derive(Clone)]
+#[allow(dead_code)]
 pub(crate) struct MagicalAttack {
     pub name: String,
     pub element: Element,
@@ -128,6 +129,7 @@ impl MagicalAttack {
 }
 
 /// Common trait for physical and magical attacks
+#[allow(dead_code)]
 pub trait Attack {
     fn name(&self) -> String;
     fn attributes(&self) -> Vec<Attribute>;
@@ -175,6 +177,7 @@ impl Attack for MagicalAttack {
 #[derive(Resource, Clone)]
 pub struct Attacks(pub(crate) Vec<Arc<dyn Attack + Send + Sync>>);
 
+#[allow(dead_code)]
 impl Attacks {
     /// Filter all compatible attacks for a given creature.
     pub fn filter_for_species(&self, species: &Species) -> Self {

@@ -44,11 +44,13 @@ fn init_index(mut commands: Commands, asset_server: ResMut<AssetServer>) {
 /// Hold all species and creatures in the game
 /// Not a pokedex though, more like an encyclopedia (no discover mechanism)
 #[derive(Resource)]
+#[allow(dead_code)]
 pub struct Dex {
     pub species: Vec<Species>,
     pub attacks: Attacks,
 }
 
+#[allow(dead_code)]
 impl Dex {
     pub fn new(asset_server: ResMut<AssetServer>) -> Self {
         // loading creatures

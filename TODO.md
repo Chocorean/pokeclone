@@ -2,14 +2,12 @@
 
 ## Working on
 
-- [Code] top bar
+- [Event] Fight starts before the player is done moving
 
 ## Issues
 
 
 ## TODO
-
-- [Event] Fight starts before the player is done moving
 - [Web] Add gamepad controllers (on web ?)
 - [Code] Index: show random guy
 - [Code] Fight: 1 attack = ko
@@ -22,6 +20,8 @@
 - [Art] Animate all creatures sprites ??
 
 ## Done
+
+- [Code] top bar
 
 - [Code] Show logs ?
 - [Camera] buggy when saving close to N/W/S borders, but E is fine somehow.

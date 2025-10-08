@@ -7,7 +7,7 @@ use crate::{
     ui::widgets::{button, team_member_widget},
 };
 use bevy::{
-    color::palettes::css::{BROWN, GREEN, YELLOW},
+    color::palettes::css::{BROWN, GREEN},
     prelude::*,
 };
 
@@ -55,10 +55,12 @@ pub fn setup_game_ui(
                     width: Val::Px(800.),
                     height: Val::Px(100.),
                     border: UiRect::bottom(Val::Px(2.)),
+                    padding: UiRect::all(Val::Px(10.)),
+                    column_gap: Val::Px(5.),
                     ..default()
                 },
                 BorderColor(border_color),
-                BackgroundColor(bevy::color::palettes::css::RED.into()),
+                BackgroundColor(Color::linear_rgb(0.32156863, 0.36078432, 0.51568628)),
             ))
             .with_children(|top| {
                 top.spawn((IndexButton, button("Index", font.clone())));

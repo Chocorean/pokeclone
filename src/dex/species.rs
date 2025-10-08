@@ -174,10 +174,6 @@ impl Creature {
     pub fn assets_texture_path(&self) -> String {
         format!("textures/creatures/{}.gif", self.name.to_lowercase())
     }
-
-    pub fn texture_path(&self) -> String {
-        format!("assets/{}", self.assets_texture_path())
-    }
 }
 
 ///
