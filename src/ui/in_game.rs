@@ -2,11 +2,17 @@ use crate::{
     AppState,
     camera::WorldTexture,
     dex::Dex,
-    event::NewSaveEvent,
+    event::{LogEvent, NewSaveEvent},
     team::Team,
     ui::widgets::{button, team_member_widget},
 };
-use bevy::prelude::*;
+use bevy::{
+    color::palettes::css::{BROWN, GREEN, YELLOW},
+    prelude::*,
+};
+
+#[derive(Component)]
+pub struct LogsUi;
 
 #[derive(Component)]
 pub struct GameUi;
@@ -58,6 +64,75 @@ pub fn setup_game_ui(
                 top.spawn((IndexButton, button("Index", font.clone())));
                 top.spawn((SaveButton, button("Save", font.clone())));
             });
+
+            // top logs
+            root.spawn((
+                LogsUi,
+                Node {
+                    position_type: PositionType::Absolute,
+                    top: Val::Px(0.),
+                    left: Val::Px(400.),
+                    width: Val::Px(400. - 4.),
+                    height: Val::Px(100. - 4.),
+                    margin: UiRect::all(Val::Px(2.)),
+                    padding: UiRect::all(Val::Px(4.)),
+                    border: UiRect::all(Val::Px(2.)),
+                    display: Display::Flex,
+                    flex_direction: FlexDirection::Column,
+                    justify_content: JustifyContent::FlexEnd,
+                    align_items: AlignItems::FlexStart,
+                    overflow: Overflow::clip(), // hide pushed-out lines
+                    row_gap: Val::Px(2.),
+
+                    ..default()
+                },
+                BorderRadius::all(Val::Px(5.)),
+                BorderColor(BROWN.into()),
+                BackgroundColor(GREEN.into()),
+            ))
+            // .with_children(|logs| {
+            //     logs.spawn((
+            //         Text::new("[time] test 1".to_string()),
+            //         TextFont {
+            //             font: font.clone(),
+            //             font_size: 10.,
+            //             ..default()
+            //         },
+            //     ));
+            //     logs.spawn((
+            //         Text::new("[time] test 2".to_string()),
+            //         TextFont {
+            //             font: font.clone(),
+            //             font_size: 10.,
+            //             ..default()
+            //         },
+            //     ));
+            //     logs.spawn((
+            //         Text::new("[time] test 3".to_string()),
+            //         TextFont {
+            //             font: font.clone(),
+            //             font_size: 10.,
+            //             ..default()
+            //         },
+            //     ));
+            //     logs.spawn((
+            //         Text::new("[time] test 4".to_string()),
+            //         TextFont {
+            //             font: font.clone(),
+            //             font_size: 10.,
+            //             ..default()
+            //         },
+            //     ));
+            //     logs.spawn((
+            //         Text::new("[time] test 5".to_string()),
+            //         TextFont {
+            //             font: font.clone(),
+            //             font_size: 10.,
+            //             ..default()
+            //         },
+            //     ));
+            // })
+            ;
 
             // team on the side
             root.spawn((
@@ -131,5 +206,27 @@ pub fn handle_save_button(
 ) {
     if matches!(*button, Interaction::Pressed) {
         event_writer.write(NewSaveEvent);
+    }
+}
+
+pub fn handle_new_log(
+    mut commands: Commands,
+    ui: Single<Entity, With<LogsUi>>,
+    mut reader: EventReader<LogEvent>,
+    asset_server: Res<AssetServer>,
+) {
+    let font = asset_server.load("fonts/mmc.otf");
+    for LogEvent(msg) in reader.read() {
+        let child = commands
+            .spawn((
+                Text::new(msg),
+                TextFont {
+                    font: font.clone(),
+                    font_size: 10.,
+                    ..default()
+                },
+            ))
+            .id();
+        commands.entity(*ui).add_child(child);
     }
 }

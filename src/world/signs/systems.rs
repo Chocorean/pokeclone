@@ -3,6 +3,7 @@ use bevy_easy_gif::{Gif, GifAsset};
 use bevy_ecs_ldtk::{EntityInstance, GridCoords};
 
 use crate::{
+    event::LogEvent,
     player::Player,
     utils::{Direction, read_str_from_ldtk_entity},
     world::signs::components::Sign,
@@ -12,6 +13,7 @@ pub fn handle_player_interaction_with_sign(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     player_q: Query<(&GridCoords, &Direction), With<Player>>,
     sign_q: Query<(&GridCoords, &EntityInstance), With<Sign>>,
+    mut writer: EventWriter<LogEvent>,
 ) {
     if keyboard_input.just_pressed(KeyCode::Enter) {
         let (player_grid_coords, direction) = player_q.single().unwrap();
@@ -20,7 +22,7 @@ pub fn handle_player_interaction_with_sign(
             if sign_coords == &facing_coords {
                 // Access custom fields by name
                 let msg = read_str_from_ldtk_entity("chat", sign);
-                println!("{msg}");
+                writer.write(LogEvent(msg));
             }
         }
     }

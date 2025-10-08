@@ -2,6 +2,8 @@
 
 ## Working on
 
+- [Code] top bar
+
 ## Issues
 
 
@@ -9,8 +11,6 @@
 
 - [Event] Fight starts before the player is done moving
 - [Web] Add gamepad controllers (on web ?)
-- [Code] top bar
-- [Code] Show logs ?
 - [Code] Index: show random guy
 - [Code] Fight: 1 attack = ko
 - [Code] Tame is instant, and if team < 5, remove first guy, shift all, add new to last
@@ -23,6 +23,7 @@
 
 ## Done
 
+- [Code] Show logs ?
 - [Camera] buggy when saving close to N/W/S borders, but E is fine somehow.
 - [UI] Fix assets in wasm
 - [Code] First creature moment when starting new save !

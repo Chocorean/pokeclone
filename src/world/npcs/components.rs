@@ -1,3 +1,5 @@
+use std::fmt;
+
 use bevy::{platform::collections::HashSet, prelude::*};
 use bevy_ecs_ldtk::{EntityInstance, GridCoords, LdtkEntity};
 
@@ -33,10 +35,16 @@ impl LevelNPCs {
     }
 }
 
+#[derive(Debug)]
 pub enum NPCKind {
     Librarian,
     Monk,
     Writer,
+}
+impl fmt::Display for NPCKind {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 impl From<String> for NPCKind {

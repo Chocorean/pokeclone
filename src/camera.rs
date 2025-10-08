@@ -7,7 +7,7 @@ use bevy::{
     },
 };
 use bevy_ecs_ldtk::{
-    LdtkProjectHandle, LevelEvent, LevelIid,
+    LdtkProjectHandle, LevelIid,
     assets::{LdtkProject, LevelMetadataAccessor},
 };
 

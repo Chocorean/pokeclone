@@ -48,13 +48,13 @@ impl Plugin for UiPlugin {
             )
             .add_systems(
                 Update,
-                (handle_game_ui_input.run_if(in_state(AppState::InGame)),),
+                ((handle_game_ui_input, handle_new_log).run_if(in_state(AppState::InGame)),),
             )
-            .add_systems(Update, (handle_hyperlinks, handle_buttons))
-            // specific buttons systems
             .add_systems(
                 Update,
                 (
+                    handle_hyperlinks,
+                    handle_buttons,
                     handle_resume_game_button,
                     handle_new_game_button,
                     handle_options_button,

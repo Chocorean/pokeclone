@@ -13,11 +13,9 @@ use crate::{
 ///
 /// initialize the team with a few random creatures
 pub fn init_blank_save(mut commands: Commands, dex: Res<Dex>) {
-    info!("init s");
     let save = Save::default_with_team(3, dex);
     commands.insert_resource(LevelSelection::Identifier(save.level.clone()));
     commands.insert_resource(save);
-    info!("init e");
 }
 
 /// Called by the UI after 'Resume' was pressed

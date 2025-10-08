@@ -2,6 +2,7 @@ use bevy::{platform::collections::HashSet, prelude::*};
 use bevy_ecs_ldtk::{EntityInstance, GridCoords, LevelEvent};
 
 use crate::{
+    event::LogEvent,
     player::Player,
     utils::{
         Direction, GC, SmoothMove, Y_CHAR_OFFSET, read_dir_from_ldtk_entity,
@@ -16,6 +17,7 @@ pub fn handle_player_interaction_with_npc(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     player_q: Query<(&GridCoords, &Direction), With<Player>>,
     npc_q: Query<(&GridCoords, &EntityInstance), With<NPC>>,
+    mut writer: EventWriter<LogEvent>,
 ) {
     if keyboard_input.just_pressed(KeyCode::Enter) {
         let (player_grid_coords, direction) = player_q.single().unwrap();
@@ -23,8 +25,9 @@ pub fn handle_player_interaction_with_npc(
         for (npc_coords, npc) in npc_q.iter() {
             if npc_coords == &facing_coords {
                 // Access custom fields by name
+                let kind = read_npc_kind_from_ldtk_entity(npc);
                 let chat = read_str_from_ldtk_entity("chat", npc);
-                println!("NPC says: {}", chat);
+                writer.write(LogEvent(format!("[{kind}] {chat}")));
             }
         }
     }

@@ -19,6 +19,7 @@ pub struct EventsPlugin;
 impl Plugin for EventsPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         app.add_event::<NewSaveEvent>()
+            .add_event::<LogEvent>()
             .add_event::<MoveInBushEvent>()
             .add_event::<WildEncounterEvent>()
             .add_systems(
@@ -73,7 +74,6 @@ fn spawn_wild_encounter(
     for _ in move_in_bush_reader.read() {
         let mut rng = rand::rng();
         let nbr = rand::Rng::random::<u8>(&mut rng);
-        info!(nbr);
         if nbr < 64 {
             // start a random encounter
             let creature = dex.random();
@@ -97,3 +97,6 @@ fn wild_encounter(
         next_state.set(AppState::InFight);
     }
 }
+
+#[derive(Event)]
+pub struct LogEvent(pub String);
