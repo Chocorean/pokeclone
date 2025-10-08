@@ -7,7 +7,7 @@ use bevy::{
     },
 };
 use bevy_ecs_ldtk::{
-    LdtkProjectHandle, LevelIid,
+    LdtkProjectHandle, LevelEvent, LevelIid,
     assets::{LdtkProject, LevelMetadataAccessor},
 };
 
@@ -108,9 +108,9 @@ pub fn setup_world_camera(mut commands: Commands, mut images: ResMut<Assets<Imag
 ///
 /// Ripped from [invertedEcho's project](https://github.com/invertedEcho/platformer-bevy-ldtk/blob/master/src/camera/systems.rs#L19)
 pub fn camera_follow_player(
-    player_coords: Single<&Transform, (With<Player>, Changed<Transform>)>,
-    mut cam_transform: Single<&mut Transform, (With<WorldCamera>, Without<Player>)>,
-    level_query: Query<&LevelIid>,
+    player_tf: Single<&Transform, (With<Player>, Changed<Transform>)>,
+    mut camera_tf: Single<&mut Transform, (With<WorldCamera>, Without<Player>)>,
+    level: Query<&LevelIid>,
     ldtk_projects: Query<&LdtkProjectHandle>,
     ldtk_project_assets: Res<Assets<LdtkProject>>,
 ) {
@@ -118,7 +118,7 @@ pub fn camera_follow_player(
     let ldtk_project = ldtk_project_assets
         .get(ldtk_projects.single().unwrap())
         .unwrap();
-    let Some(current_level) = level_query
+    let Some(level) = level
         .iter()
         .find_map(|level_iid| ldtk_project.get_raw_level_by_iid(&level_iid.to_string()))
     else {
@@ -126,40 +126,36 @@ pub fn camera_follow_player(
         return;
     };
 
-    let current_level_width = current_level.px_wid as f32;
-    let current_level_height = current_level.px_hei as f32;
+    let view_w = CAMERA_WIDTH * CAMERA_SCALE;
+    let view_h = CAMERA_HEIGHT * CAMERA_SCALE;
+    let half_w = view_w * 0.5;
+    let half_h = view_h * 0.5;
 
-    // if map is smaller than camera view (i.e inside building),
-    // just center on player
-    if current_level_height < CAMERA_HEIGHT * CAMERA_SCALE
-        || current_level_width < CAMERA_WIDTH * CAMERA_SCALE
-    {
-        cam_transform.translation = player_coords.translation;
-        return;
+    let level_w = level.px_wid as f32;
+    let level_h = level.px_hei as f32;
+
+    // Start centered on player
+    let mut target_x = player_tf.translation.x;
+    let mut target_y = player_tf.translation.y;
+
+    // If level wider than view, clamp X; else leave centered on player
+    if level_w > view_w {
+        if target_x - half_w < 0.0 {
+            target_x = half_w;
+        } else if target_x + half_w > level_w {
+            target_x = level_w - half_w;
+        }
     }
 
-    let half_window_width = CAMERA_WIDTH / 2.0;
-
-    // left edge of camera should not go beyond level width
-    let new_camera_translation_x =
-        (half_window_width * CAMERA_SCALE).max(player_coords.translation.x);
-
-    // right edge of camera should not go beyond level width
-    if new_camera_translation_x + half_window_width * CAMERA_SCALE < current_level_width {
-        cam_transform.translation.x += new_camera_translation_x - cam_transform.translation.x;
+    // If level taller than view, clamp Y; else leave centered on player
+    if level_h > view_h {
+        if target_y - half_h < 0.0 {
+            target_y = half_h;
+        } else if target_y + half_h > level_h {
+            target_y = level_h - half_h;
+        }
     }
 
-    // bottom of camera should not go below level height
-    let half_window_height = CAMERA_HEIGHT / 2.0;
-    let new_camera_translation_y =
-        (half_window_height * CAMERA_SCALE).max(player_coords.translation.y);
-
-    let top_of_player = player_coords.translation.y + half_window_height * CAMERA_SCALE;
-
-    // top of camera should not go above level height
-    if top_of_player > current_level_height {
-        return;
-    }
-
-    cam_transform.translation.y += new_camera_translation_y - cam_transform.translation.y;
+    camera_tf.translation.x = target_x;
+    camera_tf.translation.y = target_y;
 }
