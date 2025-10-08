@@ -4,9 +4,8 @@ use bevy_ecs_ldtk::GridCoords;
 
 use crate::{
     animation::{AnimationConfig, trigger_animation},
-    event::MoveInBushEvent,
     utils::{Direction, SmoothMove},
-    world::{GridSize, LevelHerbs, LevelNPCs, LevelWalls},
+    world::{GridSize, LevelNPCs, LevelWalls},
 };
 
 use super::components::Player;
@@ -47,8 +46,6 @@ pub fn move_player_from_input(
     input: Res<ButtonInput<KeyCode>>,
     level_walls: Res<LevelWalls>,
     level_npcs: Res<LevelNPCs>,
-    level_herbs: Res<LevelHerbs>,
-    mut event_writer: EventWriter<MoveInBushEvent>,
 ) {
     // Read keyboard input
     let (entity, player_grid_coords, mut direction, mut animation, mut sprite) =
@@ -78,9 +75,6 @@ pub fn move_player_from_input(
         commands
             .entity(entity)
             .insert(SmoothMove::new(*player_grid_coords, destination));
-        if level_herbs.herb_locations.contains(&destination) {
-            event_writer.write(MoveInBushEvent);
-        }
     } else {
         // ? gif on top of player
         let gif_pos = bevy_ecs_ldtk::utils::grid_coords_to_translation(

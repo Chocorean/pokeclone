@@ -2,27 +2,27 @@
 
 ## Working on
 
-- [Event] Fight starts before the player is done moving
-
-## Issues
-
+- [Web] Add gamepad controllers (on web ?)
 
 ## TODO
-- [Web] Add gamepad controllers (on web ?)
+
 - [Code] Index: show random guy
-- [Code] Fight: 1 attack = ko
-- [Code] Tame is instant, and if team < 5, remove first guy, shift all, add new to last
 
 ## Won't do
 
-- [Code] Associate attacks with creatures on creation, not dynamically during fights. ??
-- [Code] Fight (big)
+
+- [Code] Fight: 1 attack = ko
 - [Art] Animate all creatures sprites ??
+- [Code] Player animation not always finished when a fight starts
+- [Code] Human sprites z index
+- [Code] Actual gameplay (sorry I need to move on)
+- ... and all the TODOs left
 
 ## Done
 
+- [Code] Tame is instant, and if team < 5, remove first guy, shift all, add new to last
 - [Code] top bar
-
+- [Event] Fight starts before the player is done moving
 - [Code] Show logs ?
 - [Camera] buggy when saving close to N/W/S borders, but E is fine somehow.
 - [UI] Fix assets in wasm

@@ -6,7 +6,6 @@ mod npcs;
 mod signs;
 mod walls;
 
-pub(crate) use herbs::LevelHerbs;
 pub(crate) use npcs::{LevelNPCs, NPCKind};
 pub(crate) use walls::LevelWalls;
 

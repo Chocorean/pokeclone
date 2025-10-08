@@ -15,6 +15,9 @@ use bevy::{
 pub struct LogsUi;
 
 #[derive(Component)]
+pub struct TeamUi;
+
+#[derive(Component)]
 pub struct GameUi;
 
 #[derive(Component)]
@@ -91,53 +94,11 @@ pub fn setup_game_ui(
                 BorderRadius::all(Val::Px(5.)),
                 BorderColor(BROWN.into()),
                 BackgroundColor(GREEN.into()),
-            ))
-            // .with_children(|logs| {
-            //     logs.spawn((
-            //         Text::new("[time] test 1".to_string()),
-            //         TextFont {
-            //             font: font.clone(),
-            //             font_size: 10.,
-            //             ..default()
-            //         },
-            //     ));
-            //     logs.spawn((
-            //         Text::new("[time] test 2".to_string()),
-            //         TextFont {
-            //             font: font.clone(),
-            //             font_size: 10.,
-            //             ..default()
-            //         },
-            //     ));
-            //     logs.spawn((
-            //         Text::new("[time] test 3".to_string()),
-            //         TextFont {
-            //             font: font.clone(),
-            //             font_size: 10.,
-            //             ..default()
-            //         },
-            //     ));
-            //     logs.spawn((
-            //         Text::new("[time] test 4".to_string()),
-            //         TextFont {
-            //             font: font.clone(),
-            //             font_size: 10.,
-            //             ..default()
-            //         },
-            //     ));
-            //     logs.spawn((
-            //         Text::new("[time] test 5".to_string()),
-            //         TextFont {
-            //             font: font.clone(),
-            //             font_size: 10.,
-            //             ..default()
-            //         },
-            //     ));
-            // })
-            ;
+            ));
 
             // team on the side
             root.spawn((
+                TeamUi,
                 Node {
                     position_type: PositionType::Absolute,
                     top: Val::Px(0.),
@@ -230,5 +191,36 @@ pub fn handle_new_log(
             ))
             .id();
         commands.entity(*ui).add_child(child);
+    }
+}
+
+/// Triggered
+pub fn refresh_team_ui(
+    mut commands: Commands,
+    team: Res<Team>,
+    dex: Res<Dex>,
+    asset_server: Res<AssetServer>,
+    ui: Single<(Entity, &Children), With<TeamUi>>,
+) {
+    if !team.is_changed() {
+        return;
+    }
+
+    let (ui, children) = ui.into_inner();
+    let font = asset_server.load("fonts/mmc.otf");
+
+    let _ = team
+        .0
+        .iter()
+        .enumerate()
+        .map(|(i, mb)| {
+            commands.entity(ui).with_children(|ui| {
+                ui.spawn(team_member_widget(mb.clone(), i, font.clone(), &dex));
+            });
+        })
+        .collect::<Vec<_>>();
+
+    for child in children {
+        commands.entity(*child).despawn();
     }
 }

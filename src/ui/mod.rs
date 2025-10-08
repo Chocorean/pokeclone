@@ -44,11 +44,17 @@ impl Plugin for UiPlugin {
             .add_systems(OnExit(AppState::InFight), despawn_fight_ui)
             .add_systems(
                 Update,
-                handle_fight_input.run_if(in_state(AppState::InFight)),
+                (
+                    handle_attack_button,
+                    progress_attack_sequence,
+                    handle_tame_button,
+                    progress_tame_sequence,
+                )
+                    .run_if(in_state(AppState::InFight)),
             )
             .add_systems(
                 Update,
-                ((handle_game_ui_input, handle_new_log).run_if(in_state(AppState::InGame)),),
+                (refresh_team_ui, handle_game_ui_input).run_if(in_state(AppState::InGame)),
             )
             .add_systems(
                 Update,
@@ -63,6 +69,7 @@ impl Plugin for UiPlugin {
                     handle_index_button,
                     handle_save_button,
                     handle_reset_save_button,
+                    handle_new_log,
                 ),
             )
             .add_systems(OnEnter(AppState::Index), setup_index_ui)

@@ -5,7 +5,7 @@ use bevy::{
 use bevy_easy_gif::GifAsset;
 use serde::{Deserialize, Serialize};
 
-use crate::dex::Dex;
+use crate::dex::{Creature, Dex};
 
 #[derive(Resource, Serialize, Deserialize, Clone)]
 pub struct Team(pub Vec<TeamMember>);
@@ -59,5 +59,11 @@ impl TeamMember {
         dex.get_creature(self.creature_id).1.clone()
     }
 
-    // todo base stat + actual stats (from combat)
+    pub fn from(creature: &Creature, dex: &Dex) -> Self {
+        Self {
+            surname: None,
+            creature_id: dex.get_creature_ids(creature),
+            hp: creature.stats.hp,
+        }
+    }
 }
