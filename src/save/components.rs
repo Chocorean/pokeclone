@@ -64,7 +64,7 @@ impl Save {
     }
 
     #[cfg(not(target_arch = "wasm32"))]
-    pub fn load() -> Option<Save> {
+    pub(crate) fn load() -> Option<Save> {
         let content = fs::read_to_string(SAVE_PATH).ok()?;
         let save: Save = serde_json::from_str(&content).unwrap();
         Some(save)
@@ -90,6 +90,23 @@ impl Save {
         let mut save = Save::default();
         save.team = Team::new_random(n, dex);
         save
+    }
+
+    /// Remove save, because why not
+    #[cfg(not(target_arch = "wasm32"))]
+    pub(crate) fn delete() {
+        let _ = fs::remove_file(SAVE_PATH);
+    }
+
+    #[cfg(target_arch = "wasm32")]
+    pub(crate) fn delete() {
+        use web_sys::window;
+        let content = window()
+            .unwrap()
+            .local_storage()
+            .unwrap()
+            .unwrap()
+            .remove_item("pokeclone_save");
     }
 }
 

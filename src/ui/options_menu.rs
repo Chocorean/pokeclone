@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{AppState, ui::widgets::*};
+use crate::{AppState, save::Save, ui::widgets::*};
 
 #[derive(Component)]
 pub struct ReturnButton;
@@ -11,6 +11,17 @@ pub fn handle_return_button(
 ) {
     if matches!(*button, Interaction::Pressed) {
         next_state.set(AppState::MainMenu);
+    }
+}
+
+#[derive(Component)]
+pub struct ResetSaveButton;
+
+pub fn handle_reset_save_button(
+    button: Single<&Interaction, (Changed<Interaction>, With<ResetSaveButton>)>,
+) {
+    if matches!(*button, Interaction::Pressed) {
+        Save::delete()
     }
 }
 
@@ -50,6 +61,9 @@ pub(crate) fn setup_options_ui(mut commands: Commands, asset_server: Res<AssetSe
                         ..default()
                     },
                 ));
+                parent
+                    .spawn(button("Reset save", font.clone()))
+                    .insert(ResetSaveButton);
                 parent.spawn(button("Return", font)).insert(ReturnButton);
             });
         });

@@ -62,6 +62,7 @@ impl Plugin for UiPlugin {
                     sync_slider_visuals,
                     handle_index_button,
                     handle_save_button,
+                    handle_reset_save_button,
                 ),
             )
             .add_systems(OnEnter(AppState::Index), setup_index_ui)
