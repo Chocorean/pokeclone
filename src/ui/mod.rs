@@ -81,7 +81,8 @@ impl Plugin for UiPlugin {
             .add_systems(OnExit(AppState::Index), despawn_index_ui)
             .add_systems(
                 Update,
-                handle_index_ui_input.run_if(in_state(AppState::Index)),
+                (handle_dye_click, handle_dye_hover, handle_index_ui_input)
+                    .run_if(in_state(AppState::Index)),
             )
             .init_resource::<VirtualInput>();
         #[cfg(target_arch = "wasm32")]

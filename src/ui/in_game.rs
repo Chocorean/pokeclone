@@ -207,7 +207,6 @@ pub fn handle_new_log(
     }
 }
 
-/// Triggered
 pub fn refresh_team_ui(
     mut commands: Commands,
     team: Res<Team>,
