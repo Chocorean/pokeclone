@@ -26,6 +26,9 @@ pub struct IndexButton;
 #[derive(Component)]
 pub struct SaveButton;
 
+#[derive(Component)]
+pub struct QuitButton;
+
 pub fn setup_game_ui(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
@@ -68,6 +71,7 @@ pub fn setup_game_ui(
             .with_children(|top| {
                 top.spawn((IndexButton, button("Index", font.clone())));
                 top.spawn((SaveButton, button("Save", font.clone())));
+                top.spawn((QuitButton, button("Quit", font.clone())));
             });
 
             // top logs
@@ -169,6 +173,15 @@ pub fn handle_save_button(
 ) {
     if matches!(*button, Interaction::Pressed) {
         event_writer.write(NewSaveEvent);
+    }
+}
+
+pub fn handle_quit_button(
+    mut next_state: ResMut<NextState<AppState>>,
+    button: Single<&Interaction, (Changed<Interaction>, With<QuitButton>)>,
+) {
+    if matches!(*button, Interaction::Pressed) {
+        next_state.set(AppState::MainMenu);
     }
 }
 

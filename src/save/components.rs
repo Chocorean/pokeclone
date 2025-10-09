@@ -1,9 +1,13 @@
 use bevy::ecs::{resource::Resource, system::Res};
 use bevy_ecs_ldtk::GridCoords;
 use serde::{Deserialize, Serialize};
+
+#[cfg(not(target_arch = "wasm32"))]
 use std::fs;
 
+#[cfg(not(target_arch = "wasm32"))]
 use super::SAVE_PATH;
+
 use crate::{dex::Dex, team::Team};
 
 #[derive(Serialize, Deserialize, Resource)]
@@ -101,7 +105,7 @@ impl Save {
     #[cfg(target_arch = "wasm32")]
     pub(crate) fn delete() {
         use web_sys::window;
-        let content = window()
+        let _ = window()
             .unwrap()
             .local_storage()
             .unwrap()

@@ -4,6 +4,7 @@ use bevy_ecs_ldtk::GridCoords;
 
 use crate::{
     animation::{AnimationConfig, trigger_animation},
+    ui::VirtualInput,
     utils::{Direction, SmoothMove},
     world::{GridSize, LevelNPCs, LevelWalls},
 };
@@ -44,22 +45,23 @@ pub fn move_player_from_input(
         (With<Player>, Without<SmoothMove>),
     >,
     input: Res<ButtonInput<KeyCode>>,
+    virtual_input: Res<VirtualInput>,
     level_walls: Res<LevelWalls>,
     level_npcs: Res<LevelNPCs>,
 ) {
     // Read keyboard input
     let (entity, player_grid_coords, mut direction, mut animation, mut sprite) =
         player_q.into_inner();
-    if input.pressed(KeyCode::KeyW) {
+    if input.pressed(KeyCode::KeyW) || virtual_input.up {
         *direction = Direction::Up;
         *animation = AnimationConfig::new(3, 5, 10);
-    } else if input.pressed(KeyCode::KeyS) {
+    } else if input.pressed(KeyCode::KeyS) || virtual_input.down {
         *direction = Direction::Down;
         *animation = AnimationConfig::new(0, 2, 10);
-    } else if input.pressed(KeyCode::KeyA) {
+    } else if input.pressed(KeyCode::KeyA) || virtual_input.left {
         *direction = Direction::Left;
         *animation = AnimationConfig::new(6, 8, 10);
-    } else if input.pressed(KeyCode::KeyD) {
+    } else if input.pressed(KeyCode::KeyD) || virtual_input.right {
         *direction = Direction::Right;
         *animation = AnimationConfig::new(9, 11, 10);
     } else {

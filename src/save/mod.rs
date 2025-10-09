@@ -7,6 +7,7 @@ pub use systems::*;
 
 use crate::{AppState, ui::setup_game_ui};
 
+#[cfg(not(target_arch = "wasm32"))]
 const SAVE_PATH: &str = "assets/saves/save.json";
 
 pub struct SavePlugin;

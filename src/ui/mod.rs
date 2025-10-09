@@ -1,5 +1,8 @@
 use bevy::prelude::*;
 
+#[cfg(target_arch = "wasm32")]
+use crate::player::move_player_from_input;
+
 use crate::AppState;
 
 mod in_fight;
@@ -17,6 +20,7 @@ use options_menu::*;
 use widgets::*;
 
 pub use in_game::setup_game_ui;
+pub use main_menu::VirtualInput;
 
 pub struct UiPlugin;
 
@@ -70,6 +74,7 @@ impl Plugin for UiPlugin {
                     handle_save_button,
                     handle_reset_save_button,
                     handle_new_log,
+                    handle_quit_button,
                 ),
             )
             .add_systems(OnEnter(AppState::Index), setup_index_ui)
@@ -77,6 +82,9 @@ impl Plugin for UiPlugin {
             .add_systems(
                 Update,
                 handle_index_ui_input.run_if(in_state(AppState::Index)),
-            );
+            )
+            .init_resource::<VirtualInput>();
+        #[cfg(target_arch = "wasm32")]
+        app.add_systems(Update, handle_wasm_gamepad.before(move_player_from_input));
     }
 }

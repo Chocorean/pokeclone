@@ -4,6 +4,7 @@ use bevy_ecs_ldtk::{EntityInstance, GridCoords, LevelEvent};
 use crate::{
     event::LogEvent,
     player::Player,
+    ui::VirtualInput,
     utils::{
         Direction, GC, SmoothMove, Y_CHAR_OFFSET, read_dir_from_ldtk_entity,
         read_direction_from_ldtk_entity, read_npc_kind_from_ldtk_entity, read_str_from_ldtk_entity,
@@ -15,11 +16,12 @@ use crate::{
 /// Might need some refactoring around reading the json values
 pub fn handle_player_interaction_with_npc(
     keyboard_input: Res<ButtonInput<KeyCode>>,
+    virtual_input: Res<VirtualInput>,
     player_q: Query<(&GridCoords, &Direction), With<Player>>,
     npc_q: Query<(&GridCoords, &EntityInstance), With<NPC>>,
     mut writer: EventWriter<LogEvent>,
 ) {
-    if keyboard_input.just_pressed(KeyCode::Enter) {
+    if keyboard_input.just_pressed(KeyCode::Enter) || virtual_input.ok {
         let (player_grid_coords, direction) = player_q.single().unwrap();
         let facing_coords = direction.next_coords(*player_grid_coords);
         for (npc_coords, npc) in npc_q.iter() {

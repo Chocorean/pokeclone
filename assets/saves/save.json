@@ -1,0 +1,49 @@
+{
+    "level": "Village",
+    "coords": [
+        17,
+        7
+    ],
+    "team": [
+        {
+            "surname": null,
+            "creature_id": [
+                0,
+                0
+            ],
+            "hp": 118
+        },
+        {
+            "surname": null,
+            "creature_id": [
+                1,
+                3
+            ],
+            "hp": 80
+        },
+        {
+            "surname": null,
+            "creature_id": [
+                0,
+                3
+            ],
+            "hp": 120
+        },
+        {
+            "surname": null,
+            "creature_id": [
+                0,
+                3
+            ],
+            "hp": 120
+        },
+        {
+            "surname": null,
+            "creature_id": [
+                0,
+                1
+            ],
+            "hp": 120
+        }
+    ]
+}

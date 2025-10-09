@@ -3,16 +3,14 @@ use bevy_ecs_ldtk::app::LdtkEntityAppExt;
 
 use crate::{
     AppState,
-    player::{
-        components::PlayerBundle,
-        systems::{move_player_from_input, setup_player_atlas},
-    },
+    player::{components::PlayerBundle, systems::setup_player_atlas},
 };
 
 mod components;
 mod systems;
 
 pub use components::Player;
+pub use systems::move_player_from_input;
 
 pub struct PlayerPlugin;
 

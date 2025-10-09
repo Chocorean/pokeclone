@@ -2,16 +2,11 @@
 
 ## Working on
 
-- [Web] Add gamepad controllers (on web ?)
-
-## TODO
-
 - [Code] Index: show random guy
 
 ## Won't do
 
 
-- [Code] Fight: 1 attack = ko
 - [Art] Animate all creatures sprites ??
 - [Code] Player animation not always finished when a fight starts
 - [Code] Human sprites z index
@@ -20,6 +15,8 @@
 
 ## Done
 
+- [Code] Fight: 1 attack = ko
+- [Web] Add gamepad controllers (on web ?)
 - [Code] Tame is instant, and if team < 5, remove first guy, shift all, add new to last
 - [Code] top bar
 - [Event] Fight starts before the player is done moving

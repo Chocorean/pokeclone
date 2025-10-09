@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::AppState;
+use crate::{AppState, ui::VirtualInput};
 
 #[derive(Component)]
 pub(crate) struct IndexUi;
@@ -27,9 +27,10 @@ pub fn despawn_index_ui(mut commands: Commands, entity: Single<Entity, With<Inde
 
 pub fn handle_index_ui_input(
     input: Res<ButtonInput<KeyCode>>,
+    virtual_input: Res<VirtualInput>,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
-    if input.just_released(KeyCode::Escape) {
+    if input.just_released(KeyCode::Escape) | virtual_input.no {
         next_state.set(AppState::InGame);
     }
 }

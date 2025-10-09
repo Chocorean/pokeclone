@@ -7,7 +7,6 @@ mod player;
 mod save;
 mod team;
 mod ui;
-// mod ui_egui;
 mod utils;
 mod world;
 
@@ -43,6 +42,11 @@ pub enum AppState {
     /// `OptionsMenu` is the state when the options UI is displayed.
     OptionsMenu,
 }
+#[cfg(not(target_arch = "wasm32"))]
+const WINDOW_HEIGHT: f32 = 700.;
+
+#[cfg(target_arch = "wasm32")]
+const WINDOW_HEIGHT: f32 = 950.;
 
 fn main() {
     let mut app = App::new();
@@ -53,7 +57,7 @@ fn main() {
                 primary_window: Some(Window {
                     title: "Pokeclone".to_string(),
                     resizable: false,
-                    resolution: WindowResolution::new(1000., 700.),
+                    resolution: WindowResolution::new(1000., WINDOW_HEIGHT),
                     ..default()
                 }),
                 ..default()

@@ -1,3 +1,6 @@
+#[cfg(target_arch = "wasm32")]
+use std::f32::consts::PI;
+
 use bevy::prelude::*;
 
 use crate::{
@@ -51,6 +54,17 @@ pub fn handle_options_button(
 #[derive(Component)]
 pub struct MainMenuUi;
 
+#[cfg(target_arch = "wasm32")]
+#[derive(Component)]
+pub enum Gamepad {
+    Top,
+    Left,
+    Right,
+    Bottom,
+    Ok,
+    No,
+}
+
 pub(crate) fn setup_main_menu_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/mmc.otf");
     commands
@@ -58,7 +72,7 @@ pub(crate) fn setup_main_menu_ui(mut commands: Commands, asset_server: Res<Asset
             MainMenuUi,
             Node {
                 width: Val::Percent(100.),
-                height: Val::Percent(100.),
+                height: Val::Px(700.),
                 display: Display::Flex,
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
@@ -103,6 +117,112 @@ pub(crate) fn setup_main_menu_ui(mut commands: Commands, asset_server: Res<Asset
                     .insert(OptionsButton);
             });
         });
+
+    // virtual gamepad for wasm
+    #[cfg(target_arch = "wasm32")]
+    {
+        let image = asset_server.load("textures/gamepad/arrow.png");
+        commands
+            .spawn(Node {
+                position_type: PositionType::Absolute,
+                top: Val::Px(690.),
+                left: Val::Px(0.),
+                ..default()
+            })
+            .with_children(|main| {
+                // arrows
+                for (rot, flip_y, x, y, kind) in [
+                    (0., false, 0., 100., Gamepad::Top),
+                    (PI / 2., true, 75., 25., Gamepad::Left),
+                    (PI / 2., false, 75., 175., Gamepad::Right),
+                    (0., true, 150., 100., Gamepad::Bottom),
+                ] {
+                    main.spawn((
+                        Button,
+                        kind,
+                        Node {
+                            position_type: PositionType::Absolute,
+                            width: Val::Px(128.),
+                            height: Val::Px(128.),
+                            top: Val::Px(x),
+                            left: Val::Px(y),
+                            ..default()
+                        },
+                        ImageNode {
+                            image: image.clone(),
+                            flip_y,
+                            ..default()
+                        },
+                        Transform::from_rotation(Quat::from_axis_angle(Vec3::Z, rot)),
+                    ));
+                }
+                // A/B buttons
+                main.spawn((
+                    Button,
+                    Gamepad::Ok,
+                    Node {
+                        position_type: PositionType::Absolute,
+                        width: Val::Px(128.),
+                        height: Val::Px(128.),
+                        top: Val::Px(25.),
+                        left: Val::Px(700.),
+                        ..default()
+                    },
+                    ImageNode {
+                        image: asset_server.load("textures/gamepad/button_ok.png"),
+                        ..default()
+                    },
+                ));
+                main.spawn((
+                    Button,
+                    Gamepad::No,
+                    Node {
+                        position_type: PositionType::Absolute,
+                        width: Val::Px(128.),
+                        height: Val::Px(128.),
+                        top: Val::Px(100.),
+                        left: Val::Px(560.),
+                        ..default()
+                    },
+                    ImageNode {
+                        image: asset_server.load("textures/gamepad/button_no.png"),
+                        ..default()
+                    },
+                ));
+            });
+    }
+}
+
+#[derive(Resource, Default)]
+pub struct VirtualInput {
+    pub left: bool,
+    pub right: bool,
+    pub up: bool,
+    pub down: bool,
+    pub ok: bool,
+    pub no: bool,
+}
+
+#[cfg(target_arch = "wasm32")]
+pub fn handle_wasm_gamepad(
+    mut virt: ResMut<VirtualInput>,
+    query: Query<(&Interaction, &Gamepad), (Changed<Interaction>, With<Gamepad>)>,
+) {
+    for (interaction, kind) in query {
+        let pressed = matches!(*interaction, Interaction::Pressed);
+        match kind {
+            Gamepad::Left => virt.left = pressed,
+            Gamepad::Right => virt.right = pressed,
+            Gamepad::Top => virt.up = pressed,
+            Gamepad::Bottom => virt.down = pressed,
+            // for these two it's not great bc it stays pressed for quite some frames,
+            // but Im done.
+            Gamepad::Ok => virt.ok = pressed,
+            Gamepad::No => virt.no = pressed,
+        }
+    }
+
+    return;
 }
 
 pub(crate) fn despawn_main_menu_ui(

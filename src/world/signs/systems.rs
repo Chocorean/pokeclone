@@ -5,17 +5,19 @@ use bevy_ecs_ldtk::{EntityInstance, GridCoords};
 use crate::{
     event::LogEvent,
     player::Player,
+    ui::VirtualInput,
     utils::{Direction, read_str_from_ldtk_entity},
     world::signs::components::Sign,
 };
 
 pub fn handle_player_interaction_with_sign(
     keyboard_input: Res<ButtonInput<KeyCode>>,
+    virtual_input: Res<VirtualInput>,
     player_q: Query<(&GridCoords, &Direction), With<Player>>,
     sign_q: Query<(&GridCoords, &EntityInstance), With<Sign>>,
     mut writer: EventWriter<LogEvent>,
 ) {
-    if keyboard_input.just_pressed(KeyCode::Enter) {
+    if keyboard_input.just_pressed(KeyCode::Enter) || virtual_input.ok {
         let (player_grid_coords, direction) = player_q.single().unwrap();
         let facing_coords = direction.next_coords(*player_grid_coords);
         for (sign_coords, sign) in sign_q.iter() {
